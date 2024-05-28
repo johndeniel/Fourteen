@@ -2,7 +2,7 @@ import { Button } from '@/components/ui/button'
 import { CardTitle, CardHeader, CardContent, Card } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
 import { AvatarImage, AvatarFallback, Avatar } from '@/components/ui/avatar'
-import { CalendarDaysIcon, EyeIcon, FolderIcon, StarIcon } from '@/lib/icons'
+import { CalendarDaysIcon, EyeIcon, FolderIcon, GitForkIcon, StarIcon } from '@/lib/icons'
 import Link from 'next/link'
 import Image from 'next/image'
 
@@ -23,8 +23,8 @@ export function CardSnapshot() {
         />
         <div className="absolute top-4 right-4">
           <Button className="toggle bg-white/80 hover:bg-white transition-colors" size="sm" variant="outline">
-            <StarIcon className="h-4 w-4 mr-2 fill-primary" />
-            Star
+            <GitForkIcon className="h-4 w-4 mr-2 fill-primary" />
+            Fork
           </Button>
         </div>
       </div>
