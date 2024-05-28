@@ -2,7 +2,13 @@ import { Button } from '@/components/ui/button'
 import { CardTitle, CardHeader, CardContent, Card } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
 import { AvatarImage, AvatarFallback, Avatar } from '@/components/ui/avatar'
-import { CalendarDaysIcon, EyeIcon, FolderIcon, GitForkIcon, StarIcon } from '@/lib/icons'
+import {
+  CalendarDaysIcon,
+  EyeIcon,
+  FolderIcon,
+  GitForkIcon,
+  StarIcon,
+} from '@/lib/icons'
 import Link from 'next/link'
 import Image from 'next/image'
 
@@ -21,9 +27,13 @@ export function CardSnapshot() {
             objectFit: 'cover',
           }}
         />
-        <div className="absolute top-4 right-4">
-          <Button className="toggle bg-white/80 hover:bg-white transition-colors" size="sm" variant="outline">
-            <GitForkIcon className="h-4 w-4 mr-2 fill-primary" />
+        <div className="absolute right-4 top-4">
+          <Button
+            className="toggle bg-white/80 transition-colors hover:bg-white"
+            size="sm"
+            variant="outline"
+          >
+            <GitForkIcon className="mr-2 h-4 w-4 fill-primary" />
             Fork
           </Button>
         </div>
@@ -40,7 +50,7 @@ export function CardSnapshot() {
           </div>
         </div>
       </CardHeader>
-      <CardContent className="px-6 space-y-4">
+      <CardContent className="space-y-4 px-6">
         <div>
           <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
             <FolderIcon className="h-4 w-4" />
@@ -52,24 +62,24 @@ export function CardSnapshot() {
           </div>
         </div>
         <p className="text-sm text-gray-500 dark:text-gray-400">
-        Lorem ipsum is placeholder text commonly used in the ands graphic, print, 
-        and publishing industries for previewing layou and visual mockups. 
-        placeholder text commonly used in ths
+          Lorem ipsum is placeholder text commonly used in the ands graphic,
+          print, and publishing industries for previewing layou and visual
+          mockups. placeholder text commonly used in ths
         </p>
         <div className="flex items-center gap-4">
-          <Avatar className="w-8 h-8 border">
+          <Avatar className="h-8 w-8 border">
             <AvatarImage alt="JavaScript" src="/placeholder-user.jpg" />
             <AvatarFallback>JS</AvatarFallback>
           </Avatar>
-          <Avatar className="w-8 h-8 border">
+          <Avatar className="h-8 w-8 border">
             <AvatarImage alt="React" src="/placeholder-user.jpg" />
             <AvatarFallback>R</AvatarFallback>
           </Avatar>
-          <Avatar className="w-8 h-8 border">
+          <Avatar className="h-8 w-8 border">
             <AvatarImage alt="Tailwind CSS" src="/placeholder-user.jpg" />
             <AvatarFallback>T</AvatarFallback>
           </Avatar>
-          <Avatar className="w-8 h-8 border">
+          <Avatar className="h-8 w-8 border">
             <AvatarImage alt="Node.js" src="/placeholder-user.jpg" />
             <AvatarFallback>N</AvatarFallback>
           </Avatar>
@@ -89,7 +99,6 @@ export function CardSnapshot() {
               Full Read
             </Link>
           </div>
-         
         </div>
       </CardContent>
     </Card>

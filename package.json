@@ -1,5 +1,5 @@
 {
-  "name": "test",
+  "name": "source-code-14",
   "version": "0.1.0",
   "scripts": {
     "dev": "next dev --turbo",
@@ -7,6 +7,8 @@
     "clean": "rm -rf .next",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "lint-fix": "eslint . --ext .js,.jsx,.ts,.tsx --fix",
+    "format": "prettier --check \"**/*.{js,jsx,ts,tsx}\"",
+    "format-fix": "prettier --write \"**/*.{js,jsx,ts,tsx}\"",
     "prepare": "husky install"
   },
   "author": {
@@ -39,10 +41,13 @@
     "husky": "^9.0.11",
     "lint-staged": "^15.2.2",
     "postcss": "^8",
+    "prettier": "^3.2.5",
+    "prettier-plugin-tailwindcss": "^0.5.14",
     "tailwindcss": "^3.3.0",
     "typescript": "^5"
   },
   "lint-staged": {
-    "*.{js,ts,jsx,tsx}": "eslint . --ext .js,.jsx,.ts,.tsx"
+    "*.{js,ts,jsx,tsx}": "eslint . --ext .js,.jsx,.ts,.tsx",
+    "*.{js,ts,jsx,tsx,css}": "prettier --check \"**/*.{js,jsx,ts,tsx}\""
   }
 }

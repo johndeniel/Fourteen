@@ -20,7 +20,7 @@ export function SiteFooter() {
               jaydeeclouds
             </Link>
           </div>
-          
+
           <div className="flex items-center space-x-1">
             <Link
               href="https://github.com/johndeniel"
@@ -30,7 +30,7 @@ export function SiteFooter() {
                 buttonVariants({
                   size: 'icon',
                   variant: 'ghost',
-                })
+                }),
               )}
             >
               <GitHubIcon className="size-5" aria-hidden="true" />
