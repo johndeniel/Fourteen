@@ -1,8 +1,8 @@
 export function HeroSection() {
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center text-black">
-      <div className="relative flex h-full w-full flex-col items-center justify-center">
-        <div className="space-y-4 text-center">
+    <div className="flex min-h-screen flex-col justify-center">
+      <div className="relative flex w-full justify-center">
+        <div className="space-y-2 text-center">
           <div className="text-9xl font-bold">14</div>
           <div className="text-9xl font-bold">29</div>
         </div>
