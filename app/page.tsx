@@ -1,5 +1,6 @@
 import { HeroSection } from '@/components/hero-section'
 import { CardSnapshot } from '@/components/card-snapshot'
+import { SiteFooter } from '@/components/site-footer'
 
 export default function Home() {
   return (
@@ -13,6 +14,7 @@ export default function Home() {
         <CardSnapshot />
         <CardSnapshot />
       </div>
+      <SiteFooter />
     </main>
   )
 }
