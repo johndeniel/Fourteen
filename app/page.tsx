@@ -6,6 +6,7 @@ import { SiteFooter } from '@/components/site-footer'
 import { useEffect, useState } from 'react'
 import { ref, get } from 'firebase/database'
 import database from '@/lib/firebase-config'
+import { Cover } from '@/lib/model/cover'
 
 export default function Home() {
   const [data, setData] = useState(null)
@@ -14,8 +15,11 @@ export default function Home() {
       const coverRef = ref(database, 'cover')
       const snapshot = await get(coverRef)
       if (snapshot.exists()) {
+        const covers = Object.values(snapshot.val()).map(
+          (item) => new Cover(item),
+        )
         setData(snapshot.val())
-        console.log(snapshot.val())
+        console.log(covers)
       }
     }
     fetchData()
