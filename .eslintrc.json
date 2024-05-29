@@ -10,7 +10,7 @@
     ],
     "linebreak-style": [             // Enforces consistent linebreak style.
       "error",                       // Indicates that this rule should be enforced as an error.
-      "unix"                         // Specifies LF line endings (Unix-style)
+      "windows"                      // Specifies CRLF line endings (Windows-style)
     ],
     "quotes": [                      // Enforces consistent use of single quotes.
       "error",                       // Indicates that this rule should be enforced as an error.
