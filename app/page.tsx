@@ -5,21 +5,22 @@ import { CardSnapshot } from '@/components/card-snapshot'
 import { SiteFooter } from '@/components/site-footer'
 import { useEffect, useState } from 'react'
 import { ref, get } from 'firebase/database'
-import database from '@/lib/firebase-config'
 import { Cover } from '@/lib/model/cover'
+import database from '@/lib/firebase-config'
 
 export default function Home() {
-  const [data, setData] = useState(null)
+  const [covers, setCovers] = useState<Cover[]>([])
+
   useEffect(() => {
     const fetchData = async () => {
       const coverRef = ref(database, 'cover')
       const snapshot = await get(coverRef)
       if (snapshot.exists()) {
-        const covers = Object.values(snapshot.val()).map(
+        const coverData = snapshot.val()
+        const coversArray = Object.values(coverData).map(
           (item) => new Cover(item),
         )
-        setData(snapshot.val())
-        console.log(covers)
+        setCovers(coversArray)
       }
     }
     fetchData()
@@ -31,12 +32,9 @@ export default function Home() {
       <div className="pointer-events-none absolute inset-0 flex items-center justify-center bg-white [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)] dark:bg-black"></div>
       <HeroSection />
       <div className="relative z-10 grid grid-cols-1 justify-items-center gap-6 px-4 md:grid-cols-2 xl:grid-cols-3">
-        <CardSnapshot />
-        <CardSnapshot />
-        <CardSnapshot />
-        <CardSnapshot />
-        <CardSnapshot />
-        <CardSnapshot />
+        {covers.map((cover, index) => (
+          <CardSnapshot key={index} cover={cover} />
+        ))}
       </div>
       <SiteFooter />
     </main>
