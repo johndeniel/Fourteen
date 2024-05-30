@@ -33,7 +33,7 @@ export function CardSnapshot({ cover }: CardSnapshotProps) {
   return (
     <Card className="w-full max-w-sm">
       <div className="relative">
-        <img
+        <Image
           className="w-full rounded-t-lg object-cover"
           width={400}
           height={200}
