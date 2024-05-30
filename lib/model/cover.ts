@@ -1,5 +1,32 @@
+import { CoverTypedef } from '../typedef/cover-typedef'
+
 export class Cover {
-  constructor(data) {
+  category: string
+  description: string
+  fork: string
+  icon1: string
+  icon2: string
+  icon3: string
+  icon4: string
+  idate1: string
+  idate2: string
+  idate3: string
+  idate4: string
+  img: string
+  info1: string
+  info2: string
+  info3: string
+  info4: string
+  itech1: string
+  itech2: string
+  itech3: string
+  itech4: string
+  live: string
+  star: number
+  title: string
+  view: number
+
+  constructor(data: CoverTypedef) {
     this.category = data.category
     this.description = data.description
     this.fork = data.fork
@@ -26,99 +53,99 @@ export class Cover {
     this.view = data.view
   }
 
-  getCategory() {
+  getCategory(): string {
     return this.category
   }
 
-  getDescription() {
+  getDescription(): string {
     return this.description
   }
 
-  getFork() {
+  getFork(): string {
     return this.fork
   }
 
-  getIcon1() {
+  getIcon1(): string {
     return this.icon1
   }
 
-  getIcon2() {
+  getIcon2(): string {
     return this.icon2
   }
 
-  getIcon3() {
+  getIcon3(): string {
     return this.icon3
   }
 
-  getIcon4() {
+  getIcon4(): string {
     return this.icon4
   }
 
-  getIdate1() {
+  getIdate1(): string {
     return this.idate1
   }
 
-  getIdate2() {
+  getIdate2(): string {
     return this.idate2
   }
 
-  getIdate3() {
+  getIdate3(): string {
     return this.idate3
   }
 
-  getIdate4() {
+  getIdate4(): string {
     return this.idate4
   }
 
-  getImg() {
+  getImg(): string {
     return this.img
   }
 
-  getInfo1() {
+  getInfo1(): string {
     return this.info1
   }
 
-  getInfo2() {
+  getInfo2(): string {
     return this.info2
   }
 
-  getInfo3() {
+  getInfo3(): string {
     return this.info3
   }
 
-  getInfo4() {
+  getInfo4(): string {
     return this.info4
   }
 
-  getItech1() {
+  getItech1(): string {
     return this.itech1
   }
 
-  getItech2() {
+  getItech2(): string {
     return this.itech2
   }
 
-  getItech3() {
+  getItech3(): string {
     return this.itech3
   }
 
-  getItech4() {
+  getItech4(): string {
     return this.itech4
   }
 
-  getLive() {
+  getLive(): string {
     return this.live
   }
 
-  getStar() {
+  getStar(): number {
     return this.star
   }
 
-  getTitle() {
+  getTitle(): string {
     return this.title
   }
 
-  getView() {
+  getView(): number {
     return this.view
   }
 }
