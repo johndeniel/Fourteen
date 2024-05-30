@@ -1,5 +1,3 @@
-'use client'
-
 import { HeroSection } from '@/components/hero-section'
 import { CardSnapshot } from '@/components/card-snapshot'
 import { CardSnapshotSkeleton } from '@/components/card-snapshot-skeleton'

@@ -94,14 +94,14 @@ export function CardSnapshot({ cover }: CardSnapshotProps) {
             <HoverCardTrigger asChild>
               <Avatar className="h-8 w-8 border transition-transform group-hover:scale-110">
                 <AvatarImage alt="JavaScript" src={cover.getIcon1()} />
-                <AvatarFallback>JS</AvatarFallback>
+                <AvatarFallback>{cover.getItech1().charAt(0)}</AvatarFallback>
               </Avatar>
             </HoverCardTrigger>
             <HoverCardContent className="w-80 rounded-lg bg-white shadow-lg dark:bg-gray-950">
               <div className="flex justify-between space-x-4 p-4">
                 <Avatar>
                   <AvatarImage src={cover.getIcon1()} />
-                  <AvatarFallback>JS</AvatarFallback>
+                  <AvatarFallback>{cover.getItech1().charAt(0)}</AvatarFallback>
                 </Avatar>
                 <div className="space-y-1">
                   <h4 className="text-sm font-semibold">{cover.getItech1()}</h4>
@@ -122,14 +122,14 @@ export function CardSnapshot({ cover }: CardSnapshotProps) {
             <HoverCardTrigger asChild>
               <Avatar className="h-8 w-8 border transition-transform group-hover:scale-110">
                 <AvatarImage alt="React" src={cover.getIcon2()} />
-                <AvatarFallback>R</AvatarFallback>
+                <AvatarFallback>{cover.getItech2().charAt(0)}</AvatarFallback>
               </Avatar>
             </HoverCardTrigger>
             <HoverCardContent className="w-80 rounded-lg bg-white shadow-lg dark:bg-gray-950">
               <div className="flex justify-between space-x-4 p-4">
                 <Avatar>
                   <AvatarImage src={cover.getIcon2()} />
-                  <AvatarFallback>R</AvatarFallback>
+                  <AvatarFallback>{cover.getItech2().charAt(0)}</AvatarFallback>
                 </Avatar>
                 <div className="space-y-1">
                   <h4 className="text-sm font-semibold">{cover.getItech2()}</h4>
@@ -150,14 +150,14 @@ export function CardSnapshot({ cover }: CardSnapshotProps) {
             <HoverCardTrigger asChild>
               <Avatar className="h-8 w-8 border transition-transform group-hover:scale-110">
                 <AvatarImage alt="Tailwind CSS" src={cover.getIcon3()} />
-                <AvatarFallback>T</AvatarFallback>
+                <AvatarFallback>{cover.getItech3().charAt(0)}</AvatarFallback>
               </Avatar>
             </HoverCardTrigger>
             <HoverCardContent className="w-80 rounded-lg bg-white shadow-lg dark:bg-gray-950">
               <div className="flex justify-between space-x-4 p-4">
                 <Avatar>
                   <AvatarImage src={cover.getIcon3()} />
-                  <AvatarFallback>T</AvatarFallback>
+                  <AvatarFallback>{cover.getItech3().charAt(0)}</AvatarFallback>
                 </Avatar>
                 <div className="space-y-1">
                   <h4 className="text-sm font-semibold">{cover.getItech3()}</h4>
@@ -178,14 +178,14 @@ export function CardSnapshot({ cover }: CardSnapshotProps) {
             <HoverCardTrigger asChild>
               <Avatar className="h-8 w-8 border transition-transform group-hover:scale-110">
                 <AvatarImage alt="Node.js" src={cover.getIcon4()} />
-                <AvatarFallback>N</AvatarFallback>
+                <AvatarFallback>{cover.getItech4().charAt(0)}</AvatarFallback>
               </Avatar>
             </HoverCardTrigger>
             <HoverCardContent className="w-80 rounded-lg bg-white shadow-lg dark:bg-gray-950">
               <div className="flex justify-between space-x-4 p-4">
                 <Avatar>
                   <AvatarImage src={cover.getIcon4()} />
-                  <AvatarFallback>N</AvatarFallback>
+                  <AvatarFallback>{cover.getItech4().charAt(0)}</AvatarFallback>
                 </Avatar>
                 <div className="space-y-1">
                   <h4 className="text-sm font-semibold">{cover.getItech4()}</h4>
@@ -203,7 +203,6 @@ export function CardSnapshot({ cover }: CardSnapshotProps) {
             </HoverCardContent>
           </HoverCard>
         </div>
-
         <div className="flex items-center justify-between gap-4">
           <div className="flex gap-4">
             <Link
