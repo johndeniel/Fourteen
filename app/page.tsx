@@ -5,20 +5,8 @@ import { CardSnapshot } from '@/components/card-snapshot'
 import { CardSnapshotSkeleton } from '@/components/card-snapshot-skeleton'
 import { SiteFooter } from '@/components/site-footer'
 import { Suspense } from 'react'
-import fetchCoverData from '@/lib/fetchCoverData'
+import { GetCoverData } from '@/server/queries/get-cover-data'
 import { Cover } from '@/lib/model/cover'
-
-function CoverList() {
-  const covers: Cover[] = fetchCoverData()
-
-  return (
-    <div className="relative z-10 grid grid-cols-1 justify-items-center gap-6 px-4 md:grid-cols-2 xl:grid-cols-3">
-      {covers.map((cover, index: number) => (
-        <CardSnapshot key={index} cover={cover} />
-      ))}
-    </div>
-  )
-}
 
 export default function Home() {
   return (
@@ -31,5 +19,16 @@ export default function Home() {
       </Suspense>
       <SiteFooter />
     </main>
+  )
+}
+
+function CoverList() {
+  const covers: Cover[] = GetCoverData()
+  return (
+    <div className="relative z-10 grid grid-cols-1 justify-items-center gap-6 px-4 md:grid-cols-2 xl:grid-cols-3">
+      {covers.map((cover, index: number) => (
+        <CardSnapshot key={index} cover={cover} />
+      ))}
+    </div>
   )
 }
