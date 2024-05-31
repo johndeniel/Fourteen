@@ -6,6 +6,7 @@ export interface CoverTypedef {
   icon2: string
   icon3: string
   icon4: string
+  id: number
   idate1: string
   idate2: string
   idate3: string

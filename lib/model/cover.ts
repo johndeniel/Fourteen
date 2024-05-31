@@ -8,6 +8,7 @@ export class Cover {
   icon2: string
   icon3: string
   icon4: string
+  id: number
   idate1: string
   idate2: string
   idate3: string
@@ -34,6 +35,7 @@ export class Cover {
     this.icon2 = data.icon2
     this.icon3 = data.icon3
     this.icon4 = data.icon4
+    this.id = data.id
     this.idate1 = data.idate1
     this.idate2 = data.idate2
     this.idate3 = data.idate3
@@ -79,6 +81,10 @@ export class Cover {
 
   getIcon4(): string {
     return this.icon4
+  }
+
+  getId(): number {
+    return this.id
   }
 
   getIdate1(): string {

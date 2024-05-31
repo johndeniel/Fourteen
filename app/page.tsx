@@ -24,8 +24,8 @@ function CoverList() {
   const covers: Cover[] = GetCoverData()
   return (
     <div className="relative z-10 grid grid-cols-1 justify-items-center gap-6 px-4 md:grid-cols-2 xl:grid-cols-3">
-      {covers.map((cover, index: number) => (
-        <CardSnapshot key={index} cover={cover} />
+      {covers.map((cover: Cover) => (
+        <CardSnapshot key={cover.id} cover={cover} />
       ))}
     </div>
   )
