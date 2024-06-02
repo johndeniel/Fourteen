@@ -10,7 +10,7 @@ export function HeroSection() {
           <div className="text-center">
             <div className="text-4xl font-bold">SHOWCASES</div>
             <div className="text-md">Clean code - creative solutions</div>
-            <div className="text-md">SOURCE CODE 14</div>
+            <div className="text-md">SOURCE CODE XIV</div>
           </div>
         </div>
       </div>
