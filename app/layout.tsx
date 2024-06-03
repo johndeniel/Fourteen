@@ -55,6 +55,13 @@ export const metadata: Metadata = {
       },
     ],
   },
+  robots: {
+    index: true,
+    follow: true,
+    'max-snippet': -1,
+    'max-image-preview': 'large',
+    'max-video-preview': -1,
+  },
 }
 
 export default function RootLayout({
@@ -64,6 +71,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <link
+          rel="sitemap"
+          type="application/xml"
+          href="https://fourteen-xiv.vercel.app/sitemap.xml"
+        />
+      </head>
       <body className={inter.className}>{children}</body>
     </html>
   )
