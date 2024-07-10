@@ -138,9 +138,22 @@ const contributionsData: ContributionTypedef[] = [
   },
 ]
 
+import { GetRecentRepos } from '@/server/queries/get-recent-repos'
+
+async function getRepo() {
+  try {
+    const repoNames = await GetRecentRepos()
+    console.log('Repository names:', repoNames)
+    return { repoNames }
+  } catch (error) {
+    console.error('Error fetching repositories:', error)
+    return { repoNames: [] }
+  }
+}
+
 export default function Home() {
   const covers: Cover[] = GetCoverData()
-
+  getRepo()
   return (
     <main className="relative h-full w-full items-center justify-center bg-white bg-dot-black/[0.2] sm:container dark:bg-black dark:bg-dot-white/[0.2]">
       {/* Radial gradient for the container to give a faded look */}
