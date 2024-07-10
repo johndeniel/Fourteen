@@ -1,4 +1,6 @@
-export const GetRecentRepos = async (): Promise<string[]> => {
+import { RepositoryTypedef } from '@/lib/typedef/repository-typedef'
+
+export const GetRecentRepos = async (): Promise<RepositoryTypedef[]> => {
   const token = process.env.NEXT_PUBLIC_GITHUB_TOKEN
   const headers: HeadersInit = token ? { Authorization: `Bearer ${token}` } : {}
 
@@ -32,9 +34,48 @@ export const GetRecentRepos = async (): Promise<string[]> => {
     }
 
     const allRepos = [...userRepos, ...collabRepos]
-    const repoNames = allRepos.map((repo) => repo.name)
 
-    return repoNames
+    const repoDetails: RepositoryTypedef[] = await Promise.all(
+      allRepos.map(async (repo) => {
+        const commitsResponse = await fetch(
+          `https://api.github.com/repos/${repo.owner.login}/${repo.name}/commits`,
+          { headers },
+        )
+        const commits = await commitsResponse.json()
+
+        // Get the last two commit messages and their details
+        const lastTwoCommits = commits.slice(0, 2).map((commit: any) => ({
+          message: commit.commit.message,
+          sha: commit.sha,
+        }))
+
+        // Format date
+        const latestCommit = commits[0]
+        const commitDate = new Date(latestCommit.commit.author.date)
+        const formattedDate = commitDate.toLocaleString('en-US', {
+          year: 'numeric',
+          month: 'short',
+          day: 'numeric',
+        })
+
+        return {
+          repository_name: repo.name,
+          repository_description: repo.description,
+          commit_message: lastTwoCommits.map(
+            (commit: { message: any }) => commit.message,
+          ),
+          author_name: repo.owner.login,
+          author_initial: repo.owner.login
+            .split(' ')
+            .map((n: string) => n[0])
+            .join(''),
+          author_avatar_url: repo.owner.avatar_url,
+          last_updated: formattedDate,
+        }
+      }),
+    )
+
+    return repoDetails
   } catch (error) {
     if (error instanceof Error) {
       throw new Error(`Failed to fetch repositories: ${error.message}`)
