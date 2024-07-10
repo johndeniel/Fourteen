@@ -24,32 +24,27 @@ export const GetRecentRepos = async (): Promise<RepositoryTypedef[]> => {
   }
 
   try {
-    const userRepos = await fetchAllPages('https://api.github.com/user/repos')
+    const allRepos = await fetchAllPages(
+      'https://api.github.com/user/repos?affiliation=owner,collaborator',
+    )
 
-    let collabRepos: any[] = []
-    if (token) {
-      collabRepos = await fetchAllPages(
-        'https://api.github.com/user/repos?type=collaborator',
-      )
-    }
+    const uniqueRepos = new Map(allRepos.map((repo) => [repo.id, repo]))
 
-    const allRepos = [...userRepos, ...collabRepos]
-
-    const repoDetails: RepositoryTypedef[] = await Promise.all(
-      allRepos.map(async (repo) => {
+    const repoDetails: (RepositoryTypedef & {
+      lastUpdatedTimestamp: number
+    })[] = await Promise.all(
+      Array.from(uniqueRepos.values()).map(async (repo) => {
         const commitsResponse = await fetch(
           `https://api.github.com/repos/${repo.owner.login}/${repo.name}/commits`,
           { headers },
         )
         const commits = await commitsResponse.json()
 
-        // Get the last two commit messages and their details
         const lastTwoCommits = commits.slice(0, 2).map((commit: any) => ({
           message: commit.commit.message,
           sha: commit.sha,
         }))
 
-        // Format date
         const latestCommit = commits[0]
         const commitDate = new Date(latestCommit.commit.author.date)
         const formattedDate = commitDate.toLocaleString('en-US', {
@@ -65,17 +60,20 @@ export const GetRecentRepos = async (): Promise<RepositoryTypedef[]> => {
             (commit: { message: any }) => commit.message,
           ),
           author_name: repo.owner.login,
-          author_initial: repo.owner.login
-            .split(' ')
-            .map((n: string) => n[0])
-            .join(''),
           author_avatar_url: repo.owner.avatar_url,
           last_updated: formattedDate,
+          lastUpdatedTimestamp: commitDate.getTime(),
         }
       }),
     )
 
-    return repoDetails
+    // Sort the repositories based on lastUpdatedTimestamp (most recent first)
+    const sortedRepoDetails = repoDetails.sort(
+      (a, b) => b.lastUpdatedTimestamp - a.lastUpdatedTimestamp,
+    )
+
+    // Remove the temporary lastUpdatedTimestamp field
+    return sortedRepoDetails.map(({ lastUpdatedTimestamp, ...repo }) => repo)
   } catch (error) {
     if (error instanceof Error) {
       throw new Error(`Failed to fetch repositories: ${error.message}`)

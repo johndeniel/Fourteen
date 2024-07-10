@@ -2,10 +2,10 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar'
 import { GitCommitVerticalIcon } from '@/lib/icons'
 import { GithubIconOutline } from '@/lib/icons'
-import { ProjectTypedef } from '@/lib/typedef/project-typedef'
+import { RepositoryTypedef } from '@/lib/typedef/repository-typedef'
 
 interface GithubContributionsProps {
-  projects: ProjectTypedef[]
+  projects: RepositoryTypedef[]
 }
 
 export function GithubProject({ projects }: GithubContributionsProps) {
@@ -37,12 +37,14 @@ export function GithubProject({ projects }: GithubContributionsProps) {
                   <CardContent className="flex flex-col items-start p-3 sm:p-4 md:p-6 lg:p-8">
                     <div className="mb-3 flex items-center">
                       <GithubIconOutline className="mr-2 h-5 w-5 text-muted-foreground" />
-                      <p className="text-sm font-semibold">{project.name}</p>
+                      <p className="text-sm font-semibold">
+                        {project.repository_name}
+                      </p>
                     </div>
                     <p className="mb-3 text-sm text-muted-foreground sm:mb-2">
-                      {project.description}
+                      {project.repository_description}
                     </p>
-                    {project.commits.map((commit, commitIndex) => (
+                    {project.commit_message.map((commit, commitIndex) => (
                       <div
                         key={commitIndex}
                         className="mt-2 flex items-center text-xs text-muted-foreground"
@@ -53,12 +55,10 @@ export function GithubProject({ projects }: GithubContributionsProps) {
                     ))}
                     <div className="flex items-center text-xs text-muted-foreground sm:mt-4">
                       <Avatar className="mr-2 h-6 w-6">
-                        <AvatarImage src={project.avatarUrl} />
-                        <AvatarFallback>
-                          {project.avatarFallback}
-                        </AvatarFallback>
+                        <AvatarImage src={project.author_avatar_url} />
+                        <AvatarFallback>{project.author_name}</AvatarFallback>
                       </Avatar>
-                      Updated {project.updatedAt}
+                      Updated {project.last_updated}
                     </div>
                   </CardContent>
                 </Card>
