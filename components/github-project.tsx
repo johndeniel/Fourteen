@@ -33,7 +33,7 @@ export function GithubProject({ projects }: GithubContributionsProps) {
                 key={index}
                 className="w-full min-w-[250px] flex-shrink-0 sm:w-[calc(50%-12px)] md:w-[calc(33.333%-12px)] lg:w-[calc(25%-12px)]"
               >
-                <Card className="bg-card text-card-foreground shadow-md transition-shadow duration-300 hover:shadow-lg">
+                <Card className="relative z-10 bg-card text-card-foreground shadow-md transition-shadow duration-300 hover:shadow-lg sm:static sm:z-auto">
                   <CardContent className="flex flex-col items-start p-3 sm:p-4 md:p-6 lg:p-8">
                     <div className="mb-3 flex items-center">
                       <GithubIconOutline className="mr-2 h-5 w-5 text-muted-foreground" />
