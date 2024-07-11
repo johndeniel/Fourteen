@@ -47,10 +47,10 @@ export function GithubProject({ projects }: GithubContributionsProps) {
                     {project.commit_message.map((commit, commitIndex) => (
                       <div
                         key={commitIndex}
-                        className="mt-2 flex items-center text-xs text-muted-foreground"
+                        className="mt-2 flex text-xs text-muted-foreground"
                       >
-                        <GitCommitVerticalIcon className="mr-2 h-4 w-4" />
-                        <span>{commit}</span>
+                        <GitCommitVerticalIcon className="mr-2 mt-1 h-4 w-4 flex-shrink-0" />
+                        <span className="break-words">{commit}</span>
                       </div>
                     ))}
                     <div className="flex items-center text-xs text-muted-foreground sm:mt-4">
@@ -58,7 +58,7 @@ export function GithubProject({ projects }: GithubContributionsProps) {
                         <AvatarImage src={project.author_avatar_url} />
                         <AvatarFallback>{project.author_name}</AvatarFallback>
                       </Avatar>
-                      Updated {project.last_updated}
+                      Updated on {project.last_updated}
                     </div>
                   </CardContent>
                 </Card>
