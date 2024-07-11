@@ -31,7 +31,7 @@ export function GithubProject({ projects }: GithubContributionsProps) {
             {projects.map((project, index) => (
               <div
                 key={index}
-                className="w-[calc(25%-12px)] min-w-[250px] flex-shrink-0"
+                className="w-full min-w-[250px] flex-shrink-0 sm:w-[calc(50%-12px)] md:w-[calc(33.333%-12px)] lg:w-[calc(25%-12px)]"
               >
                 <Card className="bg-card text-card-foreground shadow-md transition-shadow duration-300 hover:shadow-lg">
                   <CardContent className="flex flex-col items-start p-3 sm:p-4 md:p-6 lg:p-8">
@@ -53,12 +53,12 @@ export function GithubProject({ projects }: GithubContributionsProps) {
                         <span className="break-words">{commit}</span>
                       </div>
                     ))}
-                    <div className="flex items-center text-xs text-muted-foreground sm:mt-4">
+                    <div className="mt-4 flex items-center text-xs text-muted-foreground sm:mt-6 md:mt-8">
                       <Avatar className="mr-2 h-6 w-6">
                         <AvatarImage src={project.author_avatar_url} />
                         <AvatarFallback>{project.author_name}</AvatarFallback>
                       </Avatar>
-                      Updated on {project.last_updated}
+                      <span>Updated on {project.last_updated}</span>
                     </div>
                   </CardContent>
                 </Card>
