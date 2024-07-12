@@ -5,13 +5,13 @@ import database from '@/lib/firebase-config'
 
 type Cache = {
   data?: Cover[]
-  promise?: Promise<void>
+  promise?: Promise<Cover[]>
   error?: Error
 }
 
 let cache: Cache = {}
 
-export const GetCoverData = (): Cover[] => {
+export const GetCoverData = (): Promise<Cover[]> => {
   if (!cache.promise) {
     const coverRef = ref(database, 'cover')
 
@@ -25,19 +25,13 @@ export const GetCoverData = (): Cover[] => {
         } else {
           cache.data = []
         }
+        return cache.data
       })
       .catch((error) => {
         cache.error = error
+        throw error
       })
   }
 
-  if (cache.error) {
-    throw cache.error
-  }
-
-  if (!cache.data) {
-    throw cache.promise
-  }
-
-  return cache.data
+  return cache.promise
 }

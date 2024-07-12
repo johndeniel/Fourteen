@@ -1,37 +1,26 @@
 'use client'
 
+import { use, Suspense, useState, useEffect } from 'react'
 import { HeroSection } from '@/components/hero-section'
 import { CardSnapshot } from '@/components/card-snapshot'
 import { CardSnapshotSkeleton } from '@/components/card-snapshot-skeleton'
 import { SiteFooter } from '@/components/site-footer'
-import { useState, useEffect, Suspense } from 'react'
 import { GetCoverData } from '@/server/queries/get-cover-data'
 import { Cover } from '@/lib/model/cover'
 import { GithubProject } from '@/components/github-project'
 import { RepositoryTypedef } from '@/lib/typedef/repository-typedef'
 import { GetRecentRepos } from '@/server/queries/get-recent-repos'
 
-async function getRepo(): Promise<RepositoryTypedef[]> {
-  try {
-    const repoNames = await GetRecentRepos()
-    console.log('Repository names:', repoNames)
-    return repoNames
-  } catch (error) {
-    console.error('Error fetching repositories:', error)
-    return []
-  }
-}
-
 export default function Home() {
-  const covers: Cover[] = GetCoverData()
+  const coversPromise = GetCoverData()
   const [project, setProject] = useState<RepositoryTypedef[]>([])
 
   useEffect(() => {
-    async function fetchRepo() {
-      const repoData = await getRepo()
-      setProject(repoData)
+    async function fetchRepository() {
+      const res = await getRepository()
+      setProject(res)
     }
-    fetchRepo()
+    fetchRepository()
   }, [])
 
   return (
@@ -39,8 +28,8 @@ export default function Home() {
       {/* Radial gradient for the container to give a faded look */}
       <div className="pointer-events-none absolute inset-0 flex items-center justify-center bg-white [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)] dark:bg-black"></div>
       <HeroSection />
-      <Suspense fallback={<CoverListSkeleton count={covers.length} />}>
-        <CoverList covers={covers} />
+      <Suspense fallback={<CoverListSkeleton count={6} />}>
+        <Covers promise={coversPromise} />
       </Suspense>
       <div className="mt-10 sm:mt-12 md:mt-16 lg:mt-20 xl:mt-24">
         <GithubProject projects={project} />
@@ -48,6 +37,11 @@ export default function Home() {
       <SiteFooter />
     </main>
   )
+}
+
+function Covers({ promise }: { promise: Promise<Cover[]> }) {
+  const covers = use(promise)
+  return <CoverList covers={covers} />
 }
 
 function CoverList({ covers }: { covers: Cover[] }) {
@@ -70,4 +64,14 @@ function CoverListSkeleton({ count }: { count: number }) {
       {skeletons}
     </div>
   )
+}
+
+async function getRepository(): Promise<RepositoryTypedef[]> {
+  try {
+    const repository = await GetRecentRepos()
+    return repository
+  } catch (error) {
+    console.error('Error fetching repositories:', error)
+    return []
+  }
 }
