@@ -28,10 +28,9 @@ import { Cover } from '@/lib/model/cover'
 interface CardSnapshotProps {
   cover: Cover
 }
-
 export function CardSnapshot({ cover }: CardSnapshotProps) {
   return (
-    <Card className="w-full max-w-sm">
+    <Card className="w-full max-w-[400px] sm:w-[400px]">
       <div className="relative">
         <Image
           className="w-full rounded-t-lg object-cover"
@@ -66,9 +65,9 @@ export function CardSnapshot({ cover }: CardSnapshotProps) {
           </TooltipProvider>
         </div>
       </div>
-      <CardHeader className="px-6 pt-4">
+      <CardHeader className="px-4 pt-4 sm:px-6">
         <div className="flex justify-between">
-          <CardTitle className="text-2xl font-bold">
+          <CardTitle className="text-xl font-bold">
             {cover.getTitle()}
           </CardTitle>
           <div className="flex items-center gap-2 text-sm text-gray-500">
@@ -84,15 +83,14 @@ export function CardSnapshot({ cover }: CardSnapshotProps) {
           <span className="font-medium">{cover.getCategory()}</span>
         </div>
       </CardHeader>
-      <CardContent className="space-y-4 px-6">
+      <CardContent className="space-y-4 px-4 sm:px-6">
         <p className="text-sm text-gray-500 dark:text-gray-400">
           {cover.getDescription()}
         </p>
-
-        <div className="group flex items-center gap-4">
+        <div className="flex items-center gap-4">
           <HoverCard>
             <HoverCardTrigger asChild>
-              <Avatar className="h-8 w-8 border transition-transform group-hover:scale-110">
+              <Avatar className="h-8 w-8 border">
                 <AvatarImage alt="JavaScript" src={cover.getIcon1()} />
                 <AvatarFallback>{cover.getItech1().charAt(0)}</AvatarFallback>
               </Avatar>
@@ -120,7 +118,7 @@ export function CardSnapshot({ cover }: CardSnapshotProps) {
           </HoverCard>
           <HoverCard>
             <HoverCardTrigger asChild>
-              <Avatar className="h-8 w-8 border transition-transform group-hover:scale-110">
+              <Avatar className="h-8 w-8 border">
                 <AvatarImage alt="React" src={cover.getIcon2()} />
                 <AvatarFallback>{cover.getItech2().charAt(0)}</AvatarFallback>
               </Avatar>
@@ -148,7 +146,7 @@ export function CardSnapshot({ cover }: CardSnapshotProps) {
           </HoverCard>
           <HoverCard>
             <HoverCardTrigger asChild>
-              <Avatar className="h-8 w-8 border transition-transform group-hover:scale-110">
+              <Avatar className="h-8 w-8 border">
                 <AvatarImage alt="Tailwind CSS" src={cover.getIcon3()} />
                 <AvatarFallback>{cover.getItech3().charAt(0)}</AvatarFallback>
               </Avatar>
@@ -176,7 +174,7 @@ export function CardSnapshot({ cover }: CardSnapshotProps) {
           </HoverCard>
           <HoverCard>
             <HoverCardTrigger asChild>
-              <Avatar className="h-8 w-8 border transition-transform group-hover:scale-110">
+              <Avatar className="h-8 w-8 border">
                 <AvatarImage alt="Node.js" src={cover.getIcon4()} />
                 <AvatarFallback>{cover.getItech4().charAt(0)}</AvatarFallback>
               </Avatar>
