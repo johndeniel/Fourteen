@@ -4,10 +4,6 @@
   "rules": {                         // Rules configurations:
     "eqeqeq": "error",               // Requires using strict equality (=== and !==).
     "consistent-return": "error",    // Requires a return statement in function bodies.
-    "indent": [                      // Enforces consistent indentation style.
-      "error",                       // Indicates that this rule should be enforced as an error.
-      2                              // Specifies 2 spaces for indentation.
-    ],
     "linebreak-style": [             // Enforces consistent linebreak style.
       "error",                       // Indicates that this rule should be enforced as an error.
       "unix"                         // Specifies LF line endings (Unix-style)

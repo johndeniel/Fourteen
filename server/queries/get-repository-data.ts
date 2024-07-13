@@ -1,6 +1,6 @@
 import { RepositoryTypedef } from '@/lib/typedef/repository-typedef'
 
-export const GetRecentRepos = async (): Promise<RepositoryTypedef[]> => {
+export const GetRepositoryData = async (): Promise<RepositoryTypedef[]> => {
   const token = process.env.NEXT_PUBLIC_GITHUB_TOKEN
   const headers: HeadersInit = token ? { Authorization: `Bearer ${token}` } : {}
 
