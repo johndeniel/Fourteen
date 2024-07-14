@@ -3,58 +3,59 @@ import { ArticleModel } from '@/lib/model/article-model'
 import { ArticleTypedef } from '@/lib/typedef/article-typedef'
 import database from '@/lib/firebase-config'
 
-interface SectionsCache {
-  [key: string]: {
-    data: ArticleModel[] | null
-    fetchPromise?: Promise<ArticleModel[] | null>
-    lastError?: Error
-  }
+interface SectionCache {
+  data: ArticleModel[] | null
+  fetchPromise: Promise<ArticleModel[] | null> | null
+  lastError: Error | null
 }
 
-const sectionsCache: SectionsCache = {}
+const sectionsCache: Record<string, SectionCache> = {}
 
 export const FetchSectionData = async (
   sectionId: string,
 ): Promise<ArticleModel[] | null> => {
   if (!sectionsCache[sectionId]) {
-    sectionsCache[sectionId] = { data: null }
+    sectionsCache[sectionId] = {
+      data: null,
+      fetchPromise: null,
+      lastError: null,
+    }
   }
 
-  if (sectionsCache[sectionId].data !== null) {
-    return sectionsCache[sectionId].data
+  const cache = sectionsCache[sectionId]
+
+  if (cache.data !== null) {
+    return cache.data
   }
 
-  if (sectionsCache[sectionId].fetchPromise) {
-    return sectionsCache[sectionId].fetchPromise
+  if (cache.fetchPromise) {
+    return cache.fetchPromise
   }
 
   const articleDatabaseRef: DatabaseReference = ref(database, 'article')
 
-  sectionsCache[sectionId].fetchPromise = get(
-    child(articleDatabaseRef, sectionId),
-  )
+  cache.fetchPromise = get(child(articleDatabaseRef, sectionId))
     .then((snapshot) => {
       if (snapshot.exists()) {
         const data = snapshot.val() as Record<string, ArticleTypedef>
-
         const sections = Object.values(data).map(
           (sectionData) => new ArticleModel(sectionData),
         )
-        sectionsCache[sectionId].data = sections
+        cache.data = sections
         return sections
       } else {
-        sectionsCache[sectionId].data = null
+        cache.data = null
         return null
       }
     })
     .catch((error: Error) => {
-      sectionsCache[sectionId].lastError = error
-      sectionsCache[sectionId].data = null
+      cache.lastError = error
+      cache.data = null
       return null
     })
     .finally(() => {
-      sectionsCache[sectionId].fetchPromise = undefined
+      cache.fetchPromise = null
     })
 
-  return sectionsCache[sectionId].fetchPromise
+  return cache.fetchPromise
 }
