@@ -5,7 +5,7 @@ import database from '@/lib/firebase-config'
 
 interface SectionsCache {
   [key: string]: {
-    data?: ArticleModel[] | null
+    data: ArticleModel[] | null
     fetchPromise?: Promise<ArticleModel[] | null>
     lastError?: Error
   }
@@ -16,19 +16,19 @@ const sectionsCache: SectionsCache = {}
 export const FetchSectionData = async (
   sectionId: string,
 ): Promise<ArticleModel[] | null> => {
-  if (sectionsCache[sectionId]?.data !== undefined) {
+  if (!sectionsCache[sectionId]) {
+    sectionsCache[sectionId] = { data: null }
+  }
+
+  if (sectionsCache[sectionId].data !== null) {
     return sectionsCache[sectionId].data
   }
 
-  if (sectionsCache[sectionId]?.fetchPromise) {
+  if (sectionsCache[sectionId].fetchPromise) {
     return sectionsCache[sectionId].fetchPromise
   }
 
   const articleDatabaseRef: DatabaseReference = ref(database, 'article')
-
-  if (!sectionsCache[sectionId]) {
-    sectionsCache[sectionId] = {}
-  }
 
   sectionsCache[sectionId].fetchPromise = get(
     child(articleDatabaseRef, sectionId),
@@ -41,7 +41,7 @@ export const FetchSectionData = async (
           (sectionData) => new ArticleModel(sectionData),
         )
         sectionsCache[sectionId].data = sections
-        return sectionsCache[sectionId].data
+        return sections
       } else {
         sectionsCache[sectionId].data = null
         return null
