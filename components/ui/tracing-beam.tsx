@@ -34,14 +34,26 @@ export const TracingBeam: React.FC<TracingBeamProps> = ({
 
   useEffect(() => {
     const updateHeight = () => {
-      if (contentRef.current) {
-        setSvgHeight(contentRef.current.offsetHeight)
+      if (contentRef.current && containerRef.current) {
+        const contentHeight = contentRef.current.offsetHeight
+        const containerHeight = containerRef.current.offsetHeight
+        setSvgHeight(Math.max(contentHeight, containerHeight))
       }
     }
 
     updateHeight()
+
+    const resizeObserver = new ResizeObserver(updateHeight)
+    if (contentRef.current) {
+      resizeObserver.observe(contentRef.current)
+    }
+
     window.addEventListener('resize', updateHeight)
-    return () => window.removeEventListener('resize', updateHeight)
+
+    return () => {
+      resizeObserver.disconnect()
+      window.removeEventListener('resize', updateHeight)
+    }
   }, [children])
 
   const gradientStart = useSpring(
@@ -62,7 +74,10 @@ export const TracingBeam: React.FC<TracingBeamProps> = ({
         className,
       )}
     >
-      <div className="absolute -left-4 top-3 md:-left-20">
+      <div
+        className="absolute -left-4 top-3 md:-left-20"
+        style={{ height: svgHeight }}
+      >
         <motion.div
           initial={false}
           animate={{
