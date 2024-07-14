@@ -4,12 +4,11 @@ import React, { useState, useEffect, Suspense } from 'react'
 import Image from 'next/image'
 import { BackgroundGradientEffect } from '@/components/background-gradient-effect'
 import { TracingBeam } from '@/components/ui/tracing-beam'
-import { FetchArticleData } from '@/server/queries/article-data-service'
-import { ArticlesModel } from '@/lib/model/article-model'
-import { SectionModel } from '@/lib/model/section-model'
+import { FetchSectionData } from '@/server/queries/article-data-service'
+import { ArticleModel } from '@/lib/model/article-model'
 import { LoadingSpinner } from '@/components/loading-spinner'
 
-const ARTICLE_ID = 'fourteen'
+const SECTION_ID = 'fourteen'
 
 interface AsyncDataResource<T> {
   retrieve: () => T
@@ -50,14 +49,15 @@ function createAsyncDataResource<T>(
 }
 
 export default function HomePage() {
-  const [articleResource, setArticleResource] =
-    useState<AsyncDataResource<ArticlesModel | null> | null>(null)
+  const [sectionResource, setSectionResource] = useState<AsyncDataResource<
+    ArticleModel[] | null
+  > | null>(null)
 
   useEffect(() => {
-    setArticleResource(createAsyncDataResource(FetchArticleData(ARTICLE_ID)))
+    setSectionResource(createAsyncDataResource(FetchSectionData(SECTION_ID)))
   }, [])
 
-  if (!articleResource) {
+  if (!sectionResource) {
     return <LoadingSpinner />
   }
 
@@ -67,7 +67,7 @@ export default function HomePage() {
       <TracingBeam>
         <div className="mx-auto px-4 py-8 sm:px-6 sm:py-12 lg:px-8 lg:py-16">
           <Suspense fallback={<LoadingSpinner />}>
-            <ArticleContent resource={articleResource} />
+            <SectionContent resource={sectionResource} />
           </Suspense>
         </div>
       </TracingBeam>
@@ -75,33 +75,29 @@ export default function HomePage() {
   )
 }
 
-function ArticleContent({
+function SectionContent({
   resource,
 }: {
-  resource: AsyncDataResource<ArticlesModel | null>
+  resource: AsyncDataResource<ArticleModel[] | null>
 }) {
-  const article = resource.retrieve()
+  const sections = resource.retrieve()
 
-  if (!article) {
-    return <p className="text-center text-red-500">No article found</p>
+  if (!sections || sections.length === 0) {
+    return <p className="text-center text-red-500">No sections found</p>
   }
 
   return (
     <>
-      <Suspense fallback={<LoadingSpinner />}>
-        <Section section={article.getSection1()} index={0} />
-      </Suspense>
-      <Suspense fallback={<LoadingSpinner />}>
-        <Section section={article.getSection2()} index={1} />
-      </Suspense>
-      <Suspense fallback={<LoadingSpinner />}>
-        <Section section={article.getSection3()} index={2} />
-      </Suspense>
+      {sections.map((section, index) => (
+        <Suspense key={index} fallback={<LoadingSpinner />}>
+          <Section section={section} index={index} />
+        </Suspense>
+      ))}
     </>
   )
 }
 
-function Section({ section, index }: { section: SectionModel; index: number }) {
+function Section({ section, index }: { section: ArticleModel; index: number }) {
   return (
     <article className="mb-8 sm:mb-12 lg:mb-16">
       <h2 className="mb-4 text-xl font-semibold sm:mb-6 sm:text-2xl lg:text-3xl">

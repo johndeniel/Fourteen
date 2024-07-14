@@ -1,70 +1,60 @@
 import { ref, get, child, DatabaseReference } from 'firebase/database'
-import { ArticlesModel } from '@/lib/model/article-model'
-import { ArticlesTypedef } from '@/lib/typedef/article-typedef'
+import { ArticleModel } from '@/lib/model/article-model'
+import { ArticleTypedef } from '@/lib/typedef/article-typedef'
 import database from '@/lib/firebase-config'
 
-/**
- * Cache interface for storing Articles data, promises, and errors.
- */
-interface ArticlesCache {
+interface SectionsCache {
   [key: string]: {
-    data?: ArticlesModel | null
-    fetchPromise?: Promise<ArticlesModel | null>
+    data?: ArticleModel[] | null
+    fetchPromise?: Promise<ArticleModel[] | null>
     lastError?: Error
   }
 }
 
-// Initialize the cache object
-const articlesCache: ArticlesCache = {}
+const sectionsCache: SectionsCache = {}
 
-/**
- * Fetches article data from Firebase and caches the result.
- * @param articleId - The ID of the article to fetch.
- * @returns A promise that resolves to an ArticlesModel object or null.
- */
-export const FetchArticleData = async (
-  articleId: string,
-): Promise<ArticlesModel | null> => {
-  // Return cached data if available
-  if (articlesCache[articleId]?.data !== undefined) {
-    return articlesCache[articleId].data
+export const FetchSectionData = async (
+  sectionId: string,
+): Promise<ArticleModel[] | null> => {
+  if (sectionsCache[sectionId]?.data !== undefined) {
+    return sectionsCache[sectionId].data
   }
 
-  // Return existing promise if a fetch is already in progress
-  if (articlesCache[articleId]?.fetchPromise) {
-    return articlesCache[articleId].fetchPromise
+  if (sectionsCache[sectionId]?.fetchPromise) {
+    return sectionsCache[sectionId].fetchPromise
   }
 
   const articleDatabaseRef: DatabaseReference = ref(database, 'article')
 
-  if (!articlesCache[articleId]) {
-    articlesCache[articleId] = {}
+  if (!sectionsCache[sectionId]) {
+    sectionsCache[sectionId] = {}
   }
 
-  articlesCache[articleId].fetchPromise = get(
-    child(articleDatabaseRef, articleId),
+  sectionsCache[sectionId].fetchPromise = get(
+    child(articleDatabaseRef, sectionId),
   )
     .then((snapshot) => {
       if (snapshot.exists()) {
-        const data = snapshot.val() as ArticlesTypedef
-        articlesCache[articleId].data = new ArticlesModel(data)
-        return articlesCache[articleId].data
+        const data = snapshot.val() as Record<string, ArticleTypedef>
+
+        const sections = Object.values(data).map(
+          (sectionData) => new ArticleModel(sectionData),
+        )
+        sectionsCache[sectionId].data = sections
+        return sectionsCache[sectionId].data
       } else {
-        console.warn(`No article data available for ID: ${articleId}`)
-        articlesCache[articleId].data = null
+        sectionsCache[sectionId].data = null
         return null
       }
     })
     .catch((error: Error) => {
-      articlesCache[articleId].lastError = error
-      console.error(`Error fetching article data for ID ${articleId}:`, error)
-      articlesCache[articleId].data = null
+      sectionsCache[sectionId].lastError = error
+      sectionsCache[sectionId].data = null
       return null
     })
     .finally(() => {
-      // Clear the promise from cache once resolved or rejected
-      articlesCache[articleId].fetchPromise = undefined
+      sectionsCache[sectionId].fetchPromise = undefined
     })
 
-  return articlesCache[articleId].fetchPromise
+  return sectionsCache[sectionId].fetchPromise
 }

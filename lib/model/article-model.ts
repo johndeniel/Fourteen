@@ -1,26 +1,33 @@
-import { SectionModel } from './section-model'
-import { ArticlesTypedef } from '../typedef/article-typedef'
+import { ArticleTypedef } from '../typedef/article-typedef'
 
-export class ArticlesModel {
-  section1: SectionModel
-  section2: SectionModel
-  section3: SectionModel
+export class ArticleModel {
+  private header: string
+  private image: string
+  private paragraph1: string
+  private paragraph2: string
+  private paragraph3: string
 
-  constructor(data: ArticlesTypedef) {
-    this.section1 = new SectionModel(data.section1)
-    this.section2 = new SectionModel(data.section2)
-    this.section3 = new SectionModel(data.section3)
+  constructor(data: ArticleTypedef) {
+    this.header = data.header
+    this.image = data.image
+    this.paragraph1 = data.paragraph1
+    this.paragraph2 = data.paragraph2
+    this.paragraph3 = data.paragraph3
   }
 
-  getSection1(): SectionModel {
-    return this.section1
+  getHeader(): string {
+    return this.header
   }
-
-  getSection2(): SectionModel {
-    return this.section2
+  getImage(): string {
+    return this.image
   }
-
-  getSection3(): SectionModel {
-    return this.section3
+  getParagraph1(): string {
+    return this.paragraph1
+  }
+  getParagraph2(): string {
+    return this.paragraph2
+  }
+  getParagraph3(): string {
+    return this.paragraph3
   }
 }

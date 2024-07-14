@@ -1,7 +1,7 @@
-import { SectionTypedef } from '../typedef/section-typedef'
-
-export interface ArticlesTypedef {
-  section1: SectionTypedef
-  section2: SectionTypedef
-  section3: SectionTypedef
+export interface ArticleTypedef {
+  header: string
+  image: string
+  paragraph1: string
+  paragraph2: string
+  paragraph3: string
 }
