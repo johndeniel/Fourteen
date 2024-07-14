@@ -1,6 +1,6 @@
-import { CoverTypedef } from '../typedef/cover-typedef'
+import { GalleryTypedef } from '../typedef/gallery-typedef'
 
-export class Cover {
+export class GalleryModel {
   category: string
   description: string
   fork: string
@@ -27,7 +27,7 @@ export class Cover {
   title: string
   view: number
 
-  constructor(data: CoverTypedef) {
+  constructor(data: GalleryTypedef) {
     this.category = data.category
     this.description = data.description
     this.fork = data.fork

@@ -4,7 +4,7 @@ import { GitCommitVerticalIcon } from '@/lib/icons'
 import { GithubIconOutline } from '@/lib/icons'
 import { Skeleton } from '@/components/ui/skeleton'
 
-export function GithubProjectSkeleton() {
+export function GithubContributionSkeleton() {
   return (
     <div className="p-4 md:p-8">
       <main>

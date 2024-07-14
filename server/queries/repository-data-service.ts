@@ -7,7 +7,7 @@ const REPOS_PER_PAGE = 100 // GitHub's maximum per page
  * Fetches all repositories for the authenticated user.
  * @returns A promise that resolves to an array of RepositoryTypedef objects.
  */
-export async function fetchRepositoryData(): Promise<RepositoryTypedef[]> {
+export async function FetchRepositoryData(): Promise<RepositoryTypedef[]> {
   const token = process.env.NEXT_PUBLIC_GITHUB_TOKEN
   const headers: HeadersInit = token ? { Authorization: `Bearer ${token}` } : {}
 

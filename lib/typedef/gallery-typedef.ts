@@ -1,4 +1,4 @@
-export interface CoverTypedef {
+export interface GalleryTypedef {
   category: string
   description: string
   fork: string
