@@ -8,7 +8,7 @@ import database from '@/lib/firebase-config'
  */
 interface ArticlesCache {
   [key: string]: {
-    data?: ArticlesModel
+    data?: ArticlesModel | null
     fetchPromise?: Promise<ArticlesModel | null>
     lastError?: Error
   }
@@ -26,7 +26,7 @@ export const FetchArticleData = async (
   articleId: string,
 ): Promise<ArticlesModel | null> => {
   // Return cached data if available
-  if (articlesCache[articleId]?.data) {
+  if (articlesCache[articleId]?.data !== undefined) {
     return articlesCache[articleId].data
   }
 
@@ -51,12 +51,14 @@ export const FetchArticleData = async (
         return articlesCache[articleId].data
       } else {
         console.warn(`No article data available for ID: ${articleId}`)
+        articlesCache[articleId].data = null
         return null
       }
     })
     .catch((error: Error) => {
       articlesCache[articleId].lastError = error
       console.error(`Error fetching article data for ID ${articleId}:`, error)
+      articlesCache[articleId].data = null
       return null
     })
     .finally(() => {
