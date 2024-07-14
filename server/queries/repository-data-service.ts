@@ -1,41 +1,55 @@
 import { RepositoryTypedef } from '@/lib/typedef/repository-typedef'
 
-export const GetRepositoryData = async (): Promise<RepositoryTypedef[]> => {
+const GITHUB_API_BASE_URL = 'https://api.github.com'
+const REPOS_PER_PAGE = 100 // GitHub's maximum per page
+
+/**
+ * Fetches all repositories for the authenticated user.
+ * @returns A promise that resolves to an array of RepositoryTypedef objects.
+ */
+export async function fetchRepositoryData(): Promise<RepositoryTypedef[]> {
   const token = process.env.NEXT_PUBLIC_GITHUB_TOKEN
   const headers: HeadersInit = token ? { Authorization: `Bearer ${token}` } : {}
 
-  const fetchAllPages = async (url: string): Promise<any[]> => {
-    let allData: any[] = []
-    let nextUrl = url
+  /**
+   * Fetches all pages of data from a paginated API endpoint.
+   * @param url - The initial URL to fetch from.
+   * @returns A promise that resolves to an array of all fetched items.
+   */
+  async function fetchAllPages(url: string): Promise<any[]> {
+    let accumulatedData: any[] = []
+    let nextPageUrl = url
 
-    while (nextUrl) {
-      const response = await fetch(nextUrl, { headers })
+    while (nextPageUrl) {
+      const response = await fetch(nextPageUrl, { headers })
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`)
       }
-      const data = await response.json()
-      allData = allData.concat(data)
+      const pageData = await response.json()
+      accumulatedData = accumulatedData.concat(pageData)
 
       const linkHeader = response.headers.get('Link')
-      nextUrl = linkHeader?.match(/<([^>]+)>;\s*rel="next"/)?.[1] || ''
+      nextPageUrl = linkHeader?.match(/<([^>]+)>;\s*rel="next"/)?.[1] || ''
     }
 
-    return allData
+    return accumulatedData
   }
 
   try {
-    const allRepos = await fetchAllPages(
-      'https://api.github.com/user/repos?affiliation=owner,collaborator',
+    const allRepositories = await fetchAllPages(
+      `${GITHUB_API_BASE_URL}/user/repos?affiliation=owner,collaborator&per_page=${REPOS_PER_PAGE}`,
     )
 
-    const uniqueRepos = new Map(allRepos.map((repo) => [repo.id, repo]))
+    const uniqueRepositories = new Map(
+      allRepositories.map((repo) => [repo.id, repo]),
+    )
 
-    const repoDetails: (RepositoryTypedef & {
+    const repositoryDetails: (RepositoryTypedef & {
       lastUpdatedTimestamp: number
     })[] = await Promise.all(
-      Array.from(uniqueRepos.values()).map(async (repo) => {
+      Array.from(uniqueRepositories.values()).map(async (repo) => {
         const commitsResponse = await fetch(
-          `https://api.github.com/repos/${repo.owner.login}/${repo.name}/commits`,
+          `${GITHUB_API_BASE_URL}/repos/${repo.owner.login}/${repo.name}/commits`,
           { headers },
         )
         const commits = await commitsResponse.json()
@@ -67,14 +81,17 @@ export const GetRepositoryData = async (): Promise<RepositoryTypedef[]> => {
       }),
     )
 
-    // Sort the repositories based on lastUpdatedTimestamp (most recent first)
-    const sortedRepoDetails = repoDetails.sort(
+    // Sort repositories by last update time (most recent first)
+    const sortedRepositoryDetails = repositoryDetails.sort(
       (a, b) => b.lastUpdatedTimestamp - a.lastUpdatedTimestamp,
     )
 
     // Remove the temporary lastUpdatedTimestamp field
-    return sortedRepoDetails.map(({ lastUpdatedTimestamp, ...repo }) => repo)
+    return sortedRepositoryDetails.map(
+      ({ lastUpdatedTimestamp, ...repo }) => repo,
+    )
   } catch (error) {
+    console.error('Error fetching repository data:', error)
     if (error instanceof Error) {
       throw new Error(`Failed to fetch repositories: ${error.message}`)
     }
