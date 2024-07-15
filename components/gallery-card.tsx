@@ -231,7 +231,7 @@ export function GalleryCard({ gallery }: GalleryModelProps) {
             <Link
               className="inline-flex h-10 items-center justify-center rounded-md border bg-white px-4 py-2 text-sm font-medium hover:bg-gray-100"
               rel="noreferrer"
-              href="/read/fourteen"
+              href={`read/${gallery.getTitle().toLocaleLowerCase()}`}
             >
               Full Read
             </Link>

@@ -3,26 +3,26 @@ import { ArticleModel } from '@/lib/model/article-model'
 import { ArticleTypedef } from '@/lib/typedef/article-typedef'
 import database from '@/lib/firebase-config'
 
-interface SectionCache {
+interface ArticleCache {
   data: ArticleModel[] | null
   fetchPromise: Promise<ArticleModel[] | null> | null
   lastError: Error | null
 }
 
-const sectionsCache: Record<string, SectionCache> = {}
+const articlesCache: Record<string, ArticleCache> = {}
 
 export const FetchArticleData = async (
-  sectionId: string,
+  articleId: string,
 ): Promise<ArticleModel[] | null> => {
-  if (!sectionsCache[sectionId]) {
-    sectionsCache[sectionId] = {
+  if (!articlesCache[articleId]) {
+    articlesCache[articleId] = {
       data: null,
       fetchPromise: null,
       lastError: null,
     }
   }
 
-  const cache = sectionsCache[sectionId]
+  const cache = articlesCache[articleId]
 
   if (cache.data !== null) {
     return cache.data
@@ -34,15 +34,15 @@ export const FetchArticleData = async (
 
   const articleDatabaseRef: DatabaseReference = ref(database, 'article')
 
-  cache.fetchPromise = get(child(articleDatabaseRef, sectionId))
+  cache.fetchPromise = get(child(articleDatabaseRef, articleId))
     .then((snapshot) => {
       if (snapshot.exists()) {
         const data = snapshot.val() as Record<string, ArticleTypedef>
-        const sections = Object.values(data).map(
-          (sectionData) => new ArticleModel(sectionData),
+        const articles = Object.values(data).map(
+          (articleData) => new ArticleModel(articleData),
         )
-        cache.data = sections
-        return sections
+        cache.data = articles
+        return articles
       } else {
         cache.data = null
         return null
