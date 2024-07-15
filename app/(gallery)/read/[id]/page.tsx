@@ -58,10 +58,7 @@ export default function HomePage({ params }: HomePageProps): JSX.Element {
   > | null>(null)
 
   useEffect(() => {
-    const initResource = (): void => {
-      setSectionResource(createAsyncDataResource(FetchArticleData(params.id)))
-    }
-    initResource()
+    setSectionResource(createAsyncDataResource(FetchArticleData(params.id)))
   }, [params.id])
 
   if (!sectionResource) {
@@ -90,7 +87,7 @@ function SectionContent({ resource }: SectionContentProps): JSX.Element {
   const sections = resource.read()
 
   if (!sections || sections.length === 0) {
-    return <p className="text-center text-red-500">No sections found</p>
+    return <p className="text-center text-red-500">No content available</p>
   }
 
   return (
@@ -110,6 +107,27 @@ interface SectionProps {
 }
 
 function Section({ section, index }: SectionProps): JSX.Element {
+  const paragraphs = section.getParagraphs()
+
+  const renderParagraphs = () => {
+    if (Array.isArray(paragraphs)) {
+      return paragraphs.map((paragraph, pIndex) => (
+        <p key={`paragraph-${pIndex}`} className="mb-3 sm:mb-4">
+          {typeof paragraph === 'string' ? paragraph : ''}
+        </p>
+      ))
+    } else if (typeof paragraphs === 'object' && paragraphs !== null) {
+      return Object.values(paragraphs).map((paragraph, pIndex) => (
+        <p key={`paragraph-${pIndex}`} className="mb-3 sm:mb-4">
+          {typeof paragraph === 'string' ? paragraph : ''}
+        </p>
+      ))
+    } else if (typeof paragraphs === 'string') {
+      return <p className="mb-3 sm:mb-4">{paragraphs}</p>
+    }
+    return null
+  }
+
   return (
     <article className="mb-8 sm:mb-12 lg:mb-16">
       <h2 className="mb-4 text-xl font-semibold sm:mb-6 sm:text-2xl lg:text-3xl">
@@ -128,9 +146,7 @@ function Section({ section, index }: SectionProps): JSX.Element {
             />
           </div>
         )}
-        <p className="mb-3 sm:mb-4">{section.getParagraph1()}</p>
-        <p className="mb-3 sm:mb-4">{section.getParagraph2()}</p>
-        <p>{section.getParagraph3()}</p>
+        {renderParagraphs()}
       </div>
     </article>
   )

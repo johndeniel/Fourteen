@@ -42,15 +42,18 @@ export const FetchArticleData = async (
           (articleData) => new ArticleModel(articleData),
         )
         cache.data = articles
+        console.log('Fetched Data:', articles) // Logging the fetched data
         return articles
       } else {
         cache.data = null
+        console.log('No data found for articleId:', articleId) // Logging when no data is found
         return null
       }
     })
     .catch((error: Error) => {
       cache.lastError = error
       cache.data = null
+      console.error('Error fetching data for articleId:', articleId, error) // Logging the error
       return null
     })
     .finally(() => {
