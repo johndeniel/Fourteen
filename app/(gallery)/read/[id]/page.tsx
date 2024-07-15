@@ -70,7 +70,7 @@ export default function HomePage({ params }: HomePageProps): JSX.Element {
     <main className="relative min-h-screen w-full bg-white bg-dot-black/[0.2] dark:bg-black dark:bg-dot-white/[0.2]">
       <BackgroundGradientEffect />
       <TracingBeam>
-        <div className="mx-auto px-4 py-8 sm:px-6 sm:py-12 lg:px-8 lg:py-16">
+        <div className="mx-auto px-4 pt-8 sm:px-6 sm:pt-12">
           <Suspense fallback={<LoadingSpinner />}>
             <SectionContent resource={sectionResource} />
           </Suspense>
