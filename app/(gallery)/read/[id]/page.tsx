@@ -8,6 +8,7 @@ import { FetchArticleData } from '@/server/queries/article-data-service'
 import { ArticleModel } from '@/lib/model/article-model'
 import { LoadingSpinner } from '@/components/loading-spinner'
 import { SiteFooter } from '@/components/site-footer'
+import { ArticleSkeleton } from '@/components/article-skeleton'
 
 interface AsyncDataResource<T> {
   read: () => T
@@ -67,15 +68,15 @@ export default function HomePage({ params }: HomePageProps): JSX.Element {
   }
 
   return (
-    <main className="relative min-h-screen w-full bg-white bg-dot-black/[0.2] dark:bg-black dark:bg-dot-white/[0.2]">
+    <main className="relative h-full w-full items-center justify-center bg-white bg-dot-black/[0.2] sm:container dark:bg-black dark:bg-dot-white/[0.2]">
       <BackgroundGradientEffect />
       <TracingBeam>
         <div className="mx-auto px-4 pt-8 sm:px-6 sm:pt-12">
-          <Suspense fallback={<LoadingSpinner />}>
+          <Suspense fallback={<ArticleSkeleton />}>
             <SectionContent resource={sectionResource} />
           </Suspense>
+          <SiteFooter />
         </div>
-        <SiteFooter />
       </TracingBeam>
     </main>
   )
