@@ -129,24 +129,26 @@ function Section({ section, index }: SectionProps): JSX.Element {
   }
 
   return (
-    <article className="mb-8 sm:mb-12 lg:mb-16">
-      <h2 className="mb-4 text-xl font-semibold sm:mb-6 sm:text-2xl lg:text-3xl">
-        {section.getHeader()}
-      </h2>
-      <div className="prose prose-sm sm:prose-base lg:prose-lg dark:prose-invert max-w-none">
+    <article>
+      <div className="p-6 sm:p-8">
+        <h2 className="mb-4 text-2xl font-bold text-gray-900 dark:text-white sm:text-3xl lg:text-4xl">
+          {section.getHeader()}
+        </h2>
         {section.getImage() && (
-          <div className="mb-4 sm:mb-6">
+          <div className="mb-6 sm:mb-8">
             <Image
               src={section.getImage()}
               alt={`Illustration for ${section.getHeader()}`}
               width={1000}
               height={500}
-              className="h-auto w-full rounded-lg object-cover"
+              className="h-auto w-full rounded-lg object-cover shadow-sm"
               priority={index === 0}
             />
           </div>
         )}
-        {renderParagraphs()}
+        <div className="prose prose-sm sm:prose-base lg:prose-lg dark:prose-invert max-w-none">
+          {renderParagraphs()}
+        </div>
       </div>
     </article>
   )
