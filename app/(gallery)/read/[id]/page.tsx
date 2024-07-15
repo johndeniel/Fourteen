@@ -7,6 +7,7 @@ import { TracingBeam } from '@/components/ui/tracing-beam'
 import { FetchArticleData } from '@/server/queries/article-data-service'
 import { ArticleModel } from '@/lib/model/article-model'
 import { LoadingSpinner } from '@/components/loading-spinner'
+import { SiteFooter } from '@/components/site-footer'
 
 interface AsyncDataResource<T> {
   read: () => T
@@ -74,6 +75,7 @@ export default function HomePage({ params }: HomePageProps): JSX.Element {
             <SectionContent resource={sectionResource} />
           </Suspense>
         </div>
+        <SiteFooter />
       </TracingBeam>
     </main>
   )
