@@ -30,7 +30,7 @@ export const FetchGalleryData = async (): Promise<GalleryModel[]> => {
     return galleryCache.fetchPromise
   }
 
-  const coverDatabaseRef: DatabaseReference = ref(database, 'cover')
+  const coverDatabaseRef: DatabaseReference = ref(database, 'gallery')
 
   galleryCache.fetchPromise = get(coverDatabaseRef)
     .then((snapshot) => {
