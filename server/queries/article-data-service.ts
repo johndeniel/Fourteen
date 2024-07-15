@@ -11,7 +11,7 @@ interface SectionCache {
 
 const sectionsCache: Record<string, SectionCache> = {}
 
-export const FetchSectionData = async (
+export const FetchArticleData = async (
   sectionId: string,
 ): Promise<ArticleModel[] | null> => {
   if (!sectionsCache[sectionId]) {

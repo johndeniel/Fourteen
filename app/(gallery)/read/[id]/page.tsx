@@ -4,58 +4,65 @@ import React, { useState, useEffect, Suspense } from 'react'
 import Image from 'next/image'
 import { BackgroundGradientEffect } from '@/components/background-gradient-effect'
 import { TracingBeam } from '@/components/ui/tracing-beam'
-import { FetchSectionData } from '@/server/queries/article-data-service'
+import { FetchArticleData } from '@/server/queries/article-data-service'
 import { ArticleModel } from '@/lib/model/article-model'
 import { LoadingSpinner } from '@/components/loading-spinner'
 
-const SECTION_ID = 'fourteen'
-
 interface AsyncDataResource<T> {
-  retrieve: () => T
+  read: () => T
 }
 
 function createAsyncDataResource<T>(
   asyncOperation: Promise<T>,
 ): AsyncDataResource<T> {
-  let currentStatus: 'pending' | 'success' | 'error' = 'pending'
-  let resolvedData: T
-  let encounteredError: unknown
+  let status: 'pending' | 'success' | 'error' = 'pending'
+  let result: T | undefined
+  let error: unknown
 
-  const promiseChain = asyncOperation.then(
+  const suspender = asyncOperation.then(
     (data) => {
-      currentStatus = 'success'
-      resolvedData = data
+      status = 'success'
+      result = data
     },
-    (err) => {
-      currentStatus = 'error'
-      encounteredError = err
+    (e) => {
+      status = 'error'
+      error = e
     },
   )
 
   return {
-    retrieve() {
-      switch (currentStatus) {
+    read() {
+      switch (status) {
         case 'pending':
-          throw promiseChain
+          throw suspender
         case 'error':
-          throw encounteredError
+          throw error
         case 'success':
-          return resolvedData
+          return result as T
         default:
-          throw new Error('Unexpected resource state encountered')
+          throw new Error('Unexpected resource state')
       }
     },
   }
 }
 
-export default function HomePage() {
+interface HomePageProps {
+  params: {
+    id: string
+  }
+}
+
+export default function HomePage({ params }: HomePageProps): JSX.Element {
   const [sectionResource, setSectionResource] = useState<AsyncDataResource<
     ArticleModel[] | null
   > | null>(null)
 
   useEffect(() => {
-    setSectionResource(createAsyncDataResource(FetchSectionData(SECTION_ID)))
-  }, [])
+    const initResource = (): void => {
+      setSectionResource(createAsyncDataResource(FetchArticleData(params.id)))
+    }
+    initResource()
+  }, [params.id])
 
   if (!sectionResource) {
     return <LoadingSpinner />
@@ -75,12 +82,12 @@ export default function HomePage() {
   )
 }
 
-function SectionContent({
-  resource,
-}: {
+interface SectionContentProps {
   resource: AsyncDataResource<ArticleModel[] | null>
-}) {
-  const sections = resource.retrieve()
+}
+
+function SectionContent({ resource }: SectionContentProps): JSX.Element {
+  const sections = resource.read()
 
   if (!sections || sections.length === 0) {
     return <p className="text-center text-red-500">No sections found</p>
@@ -89,7 +96,7 @@ function SectionContent({
   return (
     <>
       {sections.map((section, index) => (
-        <Suspense key={index} fallback={<LoadingSpinner />}>
+        <Suspense key={`section-${index}`} fallback={<LoadingSpinner />}>
           <Section section={section} index={index} />
         </Suspense>
       ))}
@@ -97,7 +104,12 @@ function SectionContent({
   )
 }
 
-function Section({ section, index }: { section: ArticleModel; index: number }) {
+interface SectionProps {
+  section: ArticleModel
+  index: number
+}
+
+function Section({ section, index }: SectionProps): JSX.Element {
   return (
     <article className="mb-8 sm:mb-12 lg:mb-16">
       <h2 className="mb-4 text-xl font-semibold sm:mb-6 sm:text-2xl lg:text-3xl">
