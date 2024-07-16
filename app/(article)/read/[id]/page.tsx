@@ -9,17 +9,25 @@ import { LoadingSpinner } from '@/components/loading-spinner'
 import { SiteFooter } from '@/components/site-footer'
 import { ArticleSectionSkeleton } from '@/components/article-section-skeleton'
 import { ArticleSection } from '@/components/article-section'
+import { ServerError } from '@/components/server-error'
 
+// Define the AsyncDataResource interface
 interface AsyncDataResource<T> {
-  read: () => T
+  retrieve: () => T
 }
 
-function createAsyncDataResource<T>(
+/**
+ * Creates a suspense resource that can be used with React Suspense.
+ * @template T The type of data the resource will hold.
+ * @param {Promise<T>} asyncOperation The async operation to wrap.
+ * @returns {AsyncDataResource<T>} An object with a retrieve method.
+ */
+function createSuspenseResource<T>(
   asyncOperation: Promise<T>,
 ): AsyncDataResource<T> {
   let status: 'pending' | 'success' | 'error' = 'pending'
   let result: T | undefined
-  let error: unknown
+  let error: Error | undefined
 
   const suspender = asyncOperation.then(
     (data) => {
@@ -28,12 +36,12 @@ function createAsyncDataResource<T>(
     },
     (e) => {
       status = 'error'
-      error = e
+      error = e instanceof Error ? e : new Error(String(e))
     },
   )
 
   return {
-    read() {
+    retrieve(): T {
       switch (status) {
         case 'pending':
           throw suspender
@@ -48,22 +56,22 @@ function createAsyncDataResource<T>(
   }
 }
 
-interface ArticPageProps {
+interface ArticlePageProps {
   params: {
     id: string
   }
 }
 
-export default function ArticPage({ params }: ArticPageProps): JSX.Element {
-  const [sectionResource, setSectionResource] = useState<AsyncDataResource<
+export default function ArticlePage({ params }: ArticlePageProps): JSX.Element {
+  const [articleResource, setArticleResource] = useState<AsyncDataResource<
     ArticleModel[] | null
   > | null>(null)
 
   useEffect(() => {
-    setSectionResource(createAsyncDataResource(FetchArticleData(params.id)))
+    setArticleResource(createSuspenseResource(FetchArticleData(params.id)))
   }, [params.id])
 
-  if (!sectionResource) {
+  if (!articleResource) {
     return <LoadingSpinner />
   }
 
@@ -73,7 +81,7 @@ export default function ArticPage({ params }: ArticPageProps): JSX.Element {
       <TracingBeam>
         <div className="mx-auto px-4 pt-8 sm:px-6 sm:pt-12">
           <Suspense fallback={<ArticleSectionSkeleton />}>
-            <ArticleSectionsRenderer resource={sectionResource} />
+            <ArticleContent resource={articleResource} />
           </Suspense>
           <SiteFooter />
         </div>
@@ -82,21 +90,19 @@ export default function ArticPage({ params }: ArticPageProps): JSX.Element {
   )
 }
 
-interface ArticleSectionsRendererProps {
+interface ArticleContentProps {
   resource: AsyncDataResource<ArticleModel[] | null>
 }
 
-function ArticleSectionsRenderer({
-  resource,
-}: ArticleSectionsRendererProps): JSX.Element {
-  const sections = resource.read()
+function ArticleContent({ resource }: ArticleContentProps): JSX.Element {
+  const sections = resource.retrieve()
 
   if (!sections || sections.length === 0) {
-    return <p className="text-center text-red-500">No content available</p>
+    return <ServerError />
   }
 
   return (
-    <>
+    <article>
       {sections.map((section, index) => (
         <ArticleSection
           key={`section-${index}`}
@@ -104,6 +110,6 @@ function ArticleSectionsRenderer({
           index={index}
         />
       ))}
-    </>
+    </article>
   )
 }
