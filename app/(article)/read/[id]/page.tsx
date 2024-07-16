@@ -48,13 +48,13 @@ function createAsyncDataResource<T>(
   }
 }
 
-interface HomePageProps {
+interface ArticPageProps {
   params: {
     id: string
   }
 }
 
-export default function HomePage({ params }: HomePageProps): JSX.Element {
+export default function ArticPage({ params }: ArticPageProps): JSX.Element {
   const [sectionResource, setSectionResource] = useState<AsyncDataResource<
     ArticleModel[] | null
   > | null>(null)
