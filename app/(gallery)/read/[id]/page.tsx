@@ -73,11 +73,37 @@ export default function HomePage({ params }: HomePageProps): JSX.Element {
       <TracingBeam>
         <div className="mx-auto px-4 pt-8 sm:px-6 sm:pt-12">
           <Suspense fallback={<ArticleSectionSkeleton />}>
-            <ArticleSection resource={sectionResource} />
+            <ArticleSectionsRenderer resource={sectionResource} />
           </Suspense>
           <SiteFooter />
         </div>
       </TracingBeam>
     </main>
+  )
+}
+
+interface ArticleSectionsRendererProps {
+  resource: AsyncDataResource<ArticleModel[] | null>
+}
+
+function ArticleSectionsRenderer({
+  resource,
+}: ArticleSectionsRendererProps): JSX.Element {
+  const sections = resource.read()
+
+  if (!sections || sections.length === 0) {
+    return <p className="text-center text-red-500">No content available</p>
+  }
+
+  return (
+    <>
+      {sections.map((section, index) => (
+        <ArticleSection
+          key={`section-${index}`}
+          section={section}
+          index={index}
+        />
+      ))}
+    </>
   )
 }
