@@ -3,7 +3,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 const PARAGRAPH_COUNT = 2
 const SECTION_COUNT = 2
 
-export function ArticleSkeleton(): JSX.Element {
+export function ArticleSectionSkeleton(): JSX.Element {
   const renderParagraphs = () => {
     return Array.from({ length: PARAGRAPH_COUNT }, (_, index) => (
       <div key={`paragraph-${index}`} className="mb-3 sm:mb-4">

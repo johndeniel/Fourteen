@@ -1,7 +1,7 @@
 'use client'
 
 import { Suspense, useEffect, useState } from 'react'
-import { BackgroundGradientEffect } from '@/components/background-gradient-effect'
+import { BackgroundGradientEffect } from '@/components/background-gradient'
 import { HeroSection } from '@/components/hero-section'
 import { GalleryModel } from '@/lib/model/gallery-model'
 import { FetchGalleryData } from '@/server/queries/gallery-data-service'
