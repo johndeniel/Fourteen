@@ -3,17 +3,33 @@ import { ArticleModel } from '@/lib/model/article-model'
 import { ArticleTypedef } from '@/lib/typedef/article-typedef'
 import database from '@/lib/firebase-config'
 
+/**
+ * Represents the structure of the article cache.
+ */
 interface ArticleCache {
   data: ArticleModel[] | null
   fetchPromise: Promise<ArticleModel[] | null> | null
   lastError: Error | null
 }
 
+/**
+ * Cache to store fetched articles.
+ */
 const articlesCache: Record<string, ArticleCache> = {}
 
-export const FetchArticleData = async (
+/**
+ * Firebase database path for articles.
+ */
+const ARTICLE_DB_PATH = 'article'
+
+/**
+ * Fetches article data from Firebase and caches the result.
+ * @param articleId - The ID of the article to fetch.
+ * @returns A promise that resolves to an array of ArticleModel or null if not found.
+ */
+export async function FetchArticleData(
   articleId: string,
-): Promise<ArticleModel[] | null> => {
+): Promise<ArticleModel[] | null> {
   if (!articlesCache[articleId]) {
     articlesCache[articleId] = {
       data: null,
@@ -22,40 +38,41 @@ export const FetchArticleData = async (
     }
   }
 
-  const cache = articlesCache[articleId]
+  const articleCacheEntry = articlesCache[articleId]
 
-  if (cache.data !== null) {
-    return cache.data
+  if (articleCacheEntry.data !== null) {
+    return articleCacheEntry.data
   }
 
-  if (cache.fetchPromise) {
-    return cache.fetchPromise
+  if (articleCacheEntry.fetchPromise) {
+    return articleCacheEntry.fetchPromise
   }
 
-  const articleDatabaseRef: DatabaseReference = ref(database, 'article')
+  const articleDatabaseRef: DatabaseReference = ref(database, ARTICLE_DB_PATH)
 
-  cache.fetchPromise = get(child(articleDatabaseRef, articleId))
+  articleCacheEntry.fetchPromise = get(child(articleDatabaseRef, articleId))
     .then((snapshot) => {
       if (snapshot.exists()) {
         const data = snapshot.val() as Record<string, ArticleTypedef>
         const articles = Object.values(data).map(
           (articleData) => new ArticleModel(articleData),
         )
-        cache.data = articles
+        articleCacheEntry.data = articles
         return articles
       } else {
-        cache.data = null
+        articleCacheEntry.data = null
         return null
       }
     })
     .catch((error: Error) => {
-      cache.lastError = error
-      cache.data = null
+      console.error('Error fetching article data:', error)
+      articleCacheEntry.lastError = error
+      articleCacheEntry.data = null
       return null
     })
     .finally(() => {
-      cache.fetchPromise = null
+      articleCacheEntry.fetchPromise = null
     })
 
-  return cache.fetchPromise
+  return articleCacheEntry.fetchPromise
 }

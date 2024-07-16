@@ -4,54 +4,65 @@ import { GalleryTypedef } from '@/lib/typedef/gallery-typedef'
 import database from '@/lib/firebase-config'
 
 /**
- * Cache interface for storing Gallery data, promises, and errors.
+ * Represents the structure of the gallery cache.
  */
 interface GalleryCache {
-  data?: GalleryModel[]
-  fetchPromise?: Promise<GalleryModel[]>
-  lastError?: Error
+  data: GalleryModel[] | null
+  fetchPromise: Promise<GalleryModel[]> | null
+  lastError: Error | null
 }
 
-// Initialize the cache object
-const galleryCache: GalleryCache = {}
+/**
+ * Cache to store fetched gallery data.
+ */
+const galleryCache: GalleryCache = {
+  data: null,
+  fetchPromise: null,
+  lastError: null,
+}
+
+/**
+ * Firebase database path for gallery.
+ */
+const GALLERY_DB_PATH = 'gallery'
 
 /**
  * Fetches gallery data from Firebase and caches the result.
- * @returns A promise that resolves to an array of gallery objects.
+ * @returns A promise that resolves to an array of GalleryModel.
  */
-export const FetchGalleryData = async (): Promise<GalleryModel[]> => {
-  // Return cached data if available
-  if (galleryCache.data) {
+export async function FetchGalleryData(): Promise<GalleryModel[]> {
+  if (galleryCache.data !== null) {
     return galleryCache.data
   }
 
-  // Return existing promise if a fetch is already in progress
   if (galleryCache.fetchPromise) {
     return galleryCache.fetchPromise
   }
 
-  const coverDatabaseRef: DatabaseReference = ref(database, 'gallery')
+  const galleryDatabaseRef: DatabaseReference = ref(database, GALLERY_DB_PATH)
 
-  galleryCache.fetchPromise = get(coverDatabaseRef)
+  galleryCache.fetchPromise = get(galleryDatabaseRef)
     .then((snapshot) => {
       if (snapshot.exists()) {
-        const coverDataMap: Record<string, GalleryTypedef> = snapshot.val()
-        galleryCache.data = Object.values(coverDataMap)
+        const galleryDataMap = snapshot.val() as Record<string, GalleryTypedef>
+        const galleryData = Object.values(galleryDataMap)
           .map((item) => new GalleryModel(item))
           .sort((a, b) => a.id - b.id)
+        galleryCache.data = galleryData
+        return galleryData
       } else {
         galleryCache.data = []
+        return []
       }
-      return galleryCache.data
     })
     .catch((error: Error) => {
+      console.error('Error fetching gallery data:', error)
       galleryCache.lastError = error
-      console.error('Error fetching cover data:', error)
-      throw error
+      galleryCache.data = []
+      throw error // Re-throw the error to allow the caller to handle it
     })
     .finally(() => {
-      // Clear the promise from cache once resolved or rejected
-      galleryCache.fetchPromise = undefined
+      galleryCache.fetchPromise = null
     })
 
   return galleryCache.fetchPromise
