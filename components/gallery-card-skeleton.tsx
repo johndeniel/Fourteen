@@ -1,15 +1,23 @@
+import React from 'react'
 import { Button } from '@/components/ui/button'
-import { CardHeader, CardContent, Card } from '@/components/ui/card'
-import { Separator } from '@/components/ui/separator'
 import { Avatar } from '@/components/ui/avatar'
+import { Skeleton } from '@/components/ui/skeleton'
+import { Separator } from '@/components/ui/separator'
+import { CardHeader, CardContent, Card } from '@/components/ui/card'
 import { EyeIcon, FolderIcon, GitForkIcon, StarIcon } from '@/lib/icons'
 import Link from 'next/link'
-import { Skeleton } from '@/components/ui/skeleton'
 
-export function GalleryCardSkeleton() {
+const CARD_COUNT = 6
+const AVATAR_COUNT = 4
+
+/**
+ * GalleryCardSkeletonComponent renders a grid of skeleton cards to be used
+ * as placeholders while content is loading.
+ */
+export function GalleryCardSkeleton(): React.ReactElement {
   return (
     <div className="relative z-10 grid grid-cols-1 justify-items-center gap-6 px-4 md:grid-cols-2 xl:grid-cols-3">
-      {Array.from({ length: 6 }, (_, index) => (
+      {Array.from({ length: CARD_COUNT }, (_, index) => (
         <Card key={index} className="w-full max-w-sm">
           <div className="relative">
             <Skeleton className="aspect-[400/200] w-full rounded-t-lg object-cover" />
@@ -45,18 +53,11 @@ export function GalleryCardSkeleton() {
             <Skeleton className="h-4 w-full" />
             <Skeleton className="h-4 w-full" />
             <div className="flex items-center gap-4">
-              <Avatar className="h-8 w-8 border">
-                <Skeleton className="h-full w-full rounded-full" />
-              </Avatar>
-              <Avatar className="h-8 w-8 border">
-                <Skeleton className="h-full w-full rounded-full" />
-              </Avatar>
-              <Avatar className="h-8 w-8 border">
-                <Skeleton className="h-full w-full rounded-full" />
-              </Avatar>
-              <Avatar className="h-8 w-8 border">
-                <Skeleton className="h-full w-full rounded-full" />
-              </Avatar>
+              {Array.from({ length: AVATAR_COUNT }).map((_, avatarIndex) => (
+                <Avatar key={avatarIndex} className="h-8 w-8 border">
+                  <Skeleton className="h-full w-full rounded-full" />
+                </Avatar>
+              ))}
             </div>
             <div className="flex items-center justify-between gap-4">
               <div className="flex gap-4">

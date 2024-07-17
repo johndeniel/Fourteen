@@ -1,10 +1,15 @@
+import React from 'react'
 import Link from 'next/link'
 import { Shell } from '@/components/ui/shell'
 import { GitHubIcon } from '@/lib/icons'
 import { buttonVariants } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 
-export function SiteFooter() {
+/**
+ * SiteFooterComponent renders the footer section of the site,
+ * including links to social media and GitHub.
+ */
+export function SiteFooter(): React.ReactElement {
   return (
     <Shell className="w-full">
       <section className="z-10 flex items-center">

@@ -4,13 +4,22 @@ import { GitCommitVerticalIcon } from '@/lib/icons'
 import { GithubIconOutline } from '@/lib/icons'
 import { Skeleton } from '@/components/ui/skeleton'
 
+const CARD_COUNT = 5
+const COMMIT_COUNT = 3
+
+/**
+ * GithubContributionSkeletonComponent renders a set of skeleton cards
+ * representing GitHub contributions, suitable for use as placeholders
+ * while loading actual content.
+ */
+
 export function GithubContributionSkeleton() {
   return (
     <div className="p-4 md:p-8">
       <main>
         <section className="mb-6">
           <div className="flex space-x-4 overflow-x-auto pb-4">
-            {[...Array(5)].map((_, index) => (
+            {[...Array(CARD_COUNT)].map((_, index) => (
               <div key={index} className="w-[280px] flex-shrink-0">
                 <Card className="relative z-10 bg-card text-card-foreground shadow-md transition-shadow duration-300 hover:shadow-lg sm:static sm:z-auto">
                   <CardContent className="flex flex-col items-start p-4">
@@ -21,7 +30,7 @@ export function GithubContributionSkeleton() {
                     <Skeleton className="mb-3 h-4 w-full" />
                     <Skeleton className="mb-3 h-4 w-5/6" />
                     <div className="w-full">
-                      {[...Array(3)].map((_, commitIndex) => (
+                      {[...Array(COMMIT_COUNT)].map((_, commitIndex) => (
                         <div
                           key={commitIndex}
                           className="mt-2 flex text-xs text-muted-foreground"
