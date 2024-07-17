@@ -1,7 +1,10 @@
+import React from 'react'
+
 /**
- * Displays a loading spinner while content is being fetched.
+ * LoadingSpinner displays a loading spinner while content is being fetched.
+ * It ensures the spinner is centered on the screen background.
  */
-export function LoadingSpinner() {
+export function LoadingSpinner(): React.ReactElement {
   return (
     <div className="flex h-screen w-full items-center justify-center bg-gray-100 dark:bg-gray-900">
       <div className="flex flex-col items-center space-y-4">
