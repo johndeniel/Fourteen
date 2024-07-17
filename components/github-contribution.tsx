@@ -1,3 +1,4 @@
+import React from 'react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar'
 import { GitCommitVerticalIcon } from '@/lib/icons'
@@ -8,7 +9,12 @@ interface GithubContributionProps {
   repository: RepositoryTypedef[]
 }
 
-export function GithubContribution({ repository }: GithubContributionProps) {
+/**
+ * A functional component to render a list of GitHub repository contributions.
+ */
+export function GithubContribution({
+  repository,
+}: GithubContributionProps): React.ReactElement {
   return (
     <main>
       <section className="mb-6">

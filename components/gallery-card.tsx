@@ -1,7 +1,11 @@
+import React from 'react'
+import Link from 'next/link'
+import Image from 'next/image'
 import { Button } from '@/components/ui/button'
-import { CardTitle, CardHeader, CardContent, Card } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
+import { GalleryModel } from '@/lib/model/gallery-model'
 import { AvatarImage, AvatarFallback, Avatar } from '@/components/ui/avatar'
+import { CardTitle, CardHeader, CardContent, Card } from '@/components/ui/card'
 import {
   CalendarDaysIcon,
   EyeIcon,
@@ -9,27 +13,30 @@ import {
   GitForkIcon,
   StarIcon,
 } from '@/lib/icons'
-import Link from 'next/link'
-import Image from 'next/image'
-import {
-  HoverCardTrigger,
-  HoverCardContent,
-  HoverCard,
-} from '@/components/ui/hover-card'
 import {
   TooltipTrigger,
   TooltipContent,
   Tooltip,
   TooltipProvider,
 } from '@/components/ui/tooltip'
-
-import { GalleryModel } from '@/lib/model/gallery-model'
+import {
+  HoverCardTrigger,
+  HoverCardContent,
+  HoverCard,
+} from '@/components/ui/hover-card'
 
 interface GalleryModelProps {
   gallery: GalleryModel
 }
 
-export function GalleryCard({ gallery }: GalleryModelProps) {
+/**
+ * GalleryCardComponent displays a card with gallery information.
+ * It includes project image, title, description, and various statistics.
+ * It also provides links to fork the project, view live demo, and read full details.
+ */
+export function GalleryCard({
+  gallery,
+}: GalleryModelProps): React.ReactElement {
   return (
     <Card className="w-full max-w-sm">
       <div className="relative">

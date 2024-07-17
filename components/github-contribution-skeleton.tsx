@@ -1,3 +1,4 @@
+import React from 'react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Avatar } from '@/components/ui/avatar'
 import { GitCommitVerticalIcon } from '@/lib/icons'
@@ -12,8 +13,7 @@ const COMMIT_COUNT = 3
  * representing GitHub contributions, suitable for use as placeholders
  * while loading actual content.
  */
-
-export function GithubContributionSkeleton() {
+export function GithubContributionSkeleton(): React.ReactElement {
   return (
     <div className="p-4 md:p-8">
       <main>
