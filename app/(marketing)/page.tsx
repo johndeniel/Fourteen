@@ -1,7 +1,7 @@
 'use client'
 
 import { Suspense, useEffect, useState } from 'react'
-import { BackgroundGradientEffect } from '@/components/background-gradient'
+import { GradientBackgroundEffect } from '@/components/gradient-background'
 import { HeroSection } from '@/components/hero-section'
 import { GalleryModel } from '@/lib/model/gallery-model'
 import { FetchGalleryData } from '@/server/queries/gallery-data-service'
@@ -82,7 +82,7 @@ export default function HomePage(): JSX.Element {
 
   return (
     <main className="relative h-full w-full items-center justify-center bg-white bg-dot-black/[0.2] sm:container dark:bg-black dark:bg-dot-white/[0.2]">
-      <BackgroundGradientEffect />
+      <GradientBackgroundEffect />
       <HeroSection />
       <ProjectGalleryHeader />
       <Suspense fallback={<GalleryCardSkeleton />}>
