@@ -88,10 +88,12 @@ export default function HomePage(): JSX.Element {
       <Suspense fallback={<GalleryCardSkeleton />}>
         <ProjectGalleryContent resource={dataResources.galleryData} />
       </Suspense>
-      <GithubActivityHeader />
-      <Suspense fallback={<GithubContributionSkeleton />}>
-        <GithubActivityContent resource={dataResources.repositoryData} />
-      </Suspense>
+      <section className="mt-10 p-4 sm:mt-12 md:mt-16 md:p-8 lg:mt-20 xl:mt-24">
+        <GithubActivityHeader />
+        <Suspense fallback={<GithubContributionSkeleton />}>
+          <GithubActivityContent resource={dataResources.repositoryData} />
+        </Suspense>
+      </section>
       <SiteFooter />
     </main>
   )
@@ -112,7 +114,7 @@ function ProjectGalleryHeader(): JSX.Element {
 
 function GithubActivityHeader(): JSX.Element {
   return (
-    <section className="mt-10 p-4 sm:mt-12 md:mt-16 md:p-8 lg:mt-20 xl:mt-24">
+    <section>
       <header className="mb-4 sm:mb-6 md:mb-8 lg:mb-10">
         <h1 className="relative z-10 mb-2 text-2xl font-bold sm:text-3xl md:text-4xl">
           Latest Activity - Open Source Contribution
