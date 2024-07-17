@@ -63,7 +63,7 @@ type DataResources = {
   repositoryData: AsyncDataResource<RepositoryTypedef[]> | null
 }
 
-export default function HomePage(): JSX.Element {
+export default function HomePage(): React.ReactElement {
   const [dataResources, setDataResources] = useState<DataResources>({
     galleryData: null,
     repositoryData: null,
@@ -99,7 +99,7 @@ export default function HomePage(): JSX.Element {
   )
 }
 
-function ProjectGalleryHeader(): JSX.Element {
+function ProjectGalleryHeader(): React.ReactElement {
   return (
     <section className="mb-4 p-4 md:p-8">
       <h1 className="relative z-10 mb-2 text-2xl font-bold sm:text-3xl md:text-4xl">
@@ -112,7 +112,7 @@ function ProjectGalleryHeader(): JSX.Element {
   )
 }
 
-function GithubActivityHeader(): JSX.Element {
+function GithubActivityHeader(): React.ReactElement {
   return (
     <section>
       <header className="mb-4 sm:mb-6 md:mb-8 lg:mb-10">
@@ -138,7 +138,7 @@ interface ProjectGalleryContentProps {
 
 function ProjectGalleryContent({
   resource,
-}: ProjectGalleryContentProps): JSX.Element {
+}: ProjectGalleryContentProps): React.ReactElement {
   const galleryItems = resource.retrieve()
   return (
     <div className="relative z-10 grid grid-cols-1 justify-items-center gap-6 px-4 md:grid-cols-2 xl:grid-cols-3">
@@ -155,7 +155,7 @@ interface GithubActivityContentProps {
 
 function GithubActivityContent({
   resource,
-}: GithubActivityContentProps): JSX.Element {
+}: GithubActivityContentProps): React.ReactElement {
   const repositoryData = resource.retrieve()
   return <GithubContribution repository={repositoryData} />
 }

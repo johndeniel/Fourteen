@@ -1,6 +1,11 @@
+import React from 'react'
 import Link from 'next/link'
 
-export function ServerError() {
+/**
+ * ServerError displays a server error message with an option to navigate back to the home page.
+ * It provides clear feedback to users when no content is available due to a server error.
+ */
+export function ServerError(): React.ReactElement {
   return (
     <div className="flex min-h-screen flex-col items-center justify-center p-4">
       <p className="text-lg font-semibold text-red-500 dark:text-red-400">

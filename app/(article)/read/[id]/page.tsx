@@ -62,7 +62,9 @@ interface ArticlePageProps {
   }
 }
 
-export default function ArticlePage({ params }: ArticlePageProps): JSX.Element {
+export default function ArticlePage({
+  params,
+}: ArticlePageProps): React.ReactElement {
   const [articleResource, setArticleResource] = useState<AsyncDataResource<
     ArticleModel[] | null
   > | null>(null)
@@ -94,7 +96,7 @@ interface ArticleContentProps {
   resource: AsyncDataResource<ArticleModel[] | null>
 }
 
-function ArticleContent({ resource }: ArticleContentProps): JSX.Element {
+function ArticleContent({ resource }: ArticleContentProps): React.ReactElement {
   const sections = resource.retrieve()
 
   if (!sections || sections.length === 0) {

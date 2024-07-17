@@ -1,4 +1,10 @@
-export function HeroSection() {
+import React from 'react'
+
+/**
+ * HeroSection displays a hero section with prominent text and showcases information.
+ * It features a vertically centered text block with rotated text to highlight showcases.
+ */
+export function HeroSection(): React.ReactElement {
   return (
     <div className="flex min-h-screen flex-col justify-center">
       <div className="relative flex w-full justify-center">
