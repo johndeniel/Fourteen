@@ -1,125 +1,108 @@
+import { RepositoryModel } from '@/lib/model/repository-model'
 import { RepositoryTypedef } from '@/lib/typedef/repository-typedef'
 
-/**
- * Represents the structure of the repository cache.
- */
+// Define the structure for the repository cache
 interface RepositoryCache {
-  data: RepositoryTypedef[] | null
-  fetchPromise: Promise<RepositoryTypedef[]> | null
+  data: RepositoryModel[] | null
+  fetchPromise: Promise<RepositoryModel[]> | null
   lastError: Error | null
 }
 
-/**
- * Cache to store fetched repository data.
- */
+// Initialize the repository cache
 const repositoryCache: RepositoryCache = {
   data: null,
   fetchPromise: null,
   lastError: null,
 }
 
+// GitHub API constants
 const GITHUB_API_BASE_URL = 'https://api.github.com'
-const REPOS_PER_PAGE = 100 // GitHub's maximum per page
+const REPOS_PER_PAGE = 100
 
 /**
- * Fetches all repositories for the authenticated user from GitHub API and caches the result.
- * @returns A promise that resolves to an array of RepositoryTypedef objects.
+ * Fetches repository data from GitHub API
+ * @returns Promise<RepositoryModel[]>
  */
-export async function FetchRepositoryData(): Promise<RepositoryTypedef[]> {
-  if (repositoryCache.data !== null) {
-    return repositoryCache.data
-  }
+export async function FetchRepositoryData(): Promise<RepositoryModel[]> {
+  // Return cached data if available
+  if (repositoryCache.data) return repositoryCache.data
+  // Return ongoing fetch promise if exists
+  if (repositoryCache.fetchPromise) return repositoryCache.fetchPromise
 
-  if (repositoryCache.fetchPromise) {
-    return repositoryCache.fetchPromise
-  }
-
+  // Set up GitHub API authentication
   const token = process.env.NEXT_PUBLIC_GITHUB_TOKEN
   const headers: HeadersInit = token ? { Authorization: `Bearer ${token}` } : {}
 
   /**
-   * Fetches all pages of data from a paginated API endpoint.
-   * @param url - The initial URL to fetch from.
-   * @returns A promise that resolves to an array of all fetched items.
+   * Fetches all pages from a paginated API endpoint
+   * @param url - The initial URL to fetch from
+   * @returns Promise<any[]>
    */
   async function fetchAllPages(url: string): Promise<any[]> {
-    let accumulatedData: any[] = []
-    let nextPageUrl = url
-
-    while (nextPageUrl) {
-      const response = await fetch(nextPageUrl, { headers })
-      if (!response.ok) {
+    let data: any[] = [],
+      nextUrl = url
+    while (nextUrl) {
+      const response = await fetch(nextUrl, { headers })
+      if (!response.ok)
         throw new Error(`HTTP error! status: ${response.status}`)
-      }
-      const pageData = await response.json()
-      accumulatedData = accumulatedData.concat(pageData)
-
-      const linkHeader = response.headers.get('Link')
-      nextPageUrl = linkHeader?.match(/<([^>]+)>;\s*rel="next"/)?.[1] || ''
+      data = data.concat(await response.json())
+      nextUrl =
+        response.headers.get('Link')?.match(/<([^>]+)>;\s*rel="next"/)?.[1] ||
+        ''
     }
-
-    return accumulatedData
+    return data
   }
 
+  // Start the fetch process and store the promise in cache
   repositoryCache.fetchPromise = (async () => {
     try {
-      const allRepositories = await fetchAllPages(
+      // Fetch all repositories
+      const repos = await fetchAllPages(
         `${GITHUB_API_BASE_URL}/user/repos?affiliation=owner,collaborator&per_page=${REPOS_PER_PAGE}`,
       )
-
-      const uniqueRepositories = new Map(
-        allRepositories.map((repo) => [repo.id, repo]),
+      // Remove duplicate repositories
+      const uniqueRepos = Array.from(
+        new Map(repos.map((repo) => [repo.id, repo])).values(),
       )
 
-      const repositoryDetails: (RepositoryTypedef & {
-        lastUpdatedTimestamp: number
-      })[] = await Promise.all(
-        Array.from(uniqueRepositories.values()).map(async (repo) => {
-          const commitsResponse = await fetch(
+      // Fetch commit details for each repository
+      const repoDetails = await Promise.all(
+        uniqueRepos.map(async (repo) => {
+          const commits = await fetch(
             `${GITHUB_API_BASE_URL}/repos/${repo.owner.login}/${repo.name}/commits`,
             { headers },
-          )
-          const commits = await commitsResponse.json()
-
-          const lastTwoCommits = commits.slice(0, 2).map((commit: any) => ({
-            message: commit.commit.message,
-            sha: commit.sha,
-          }))
-
+          ).then((r) => r.json())
           const latestCommit = commits[0]
-          const commitDate = new Date(latestCommit.commit.author.date)
-          const formattedDate = commitDate.toLocaleString('en-US', {
-            year: 'numeric',
-            month: 'short',
-            day: 'numeric',
-          })
 
-          return {
+          // Create RepositoryTypedef object
+          const repoData: RepositoryTypedef = {
             repository_name: repo.name,
             repository_description: repo.description,
-            commit_message: lastTwoCommits.map(
-              (commit: { message: string }) => commit.message,
-            ),
+            commit_message: commits
+              .slice(0, 2)
+              .map((c: any) => c.commit.message),
             author_name: repo.owner.login,
             author_avatar_url: repo.owner.avatar_url,
-            last_updated: formattedDate,
-            lastUpdatedTimestamp: commitDate.getTime(),
+            last_updated: new Date(
+              latestCommit.commit.author.date,
+            ).toLocaleString('en-US', {
+              year: 'numeric',
+              month: 'short',
+              day: 'numeric',
+            }),
           }
+          // Create and return RepositoryModel instance
+          return new RepositoryModel(repoData)
         }),
       )
 
       // Sort repositories by last update time (most recent first)
-      const sortedRepositoryDetails = repositoryDetails.sort(
-        (a, b) => b.lastUpdatedTimestamp - a.lastUpdatedTimestamp,
+      repositoryCache.data = repoDetails.sort(
+        (a, b) =>
+          new Date(b.getLastUpdated()).getTime() -
+          new Date(a.getLastUpdated()).getTime(),
       )
-
-      // Remove the temporary lastUpdatedTimestamp field
-      const finalRepositoryDetails = sortedRepositoryDetails.map(
-        ({ lastUpdatedTimestamp, ...repo }) => repo,
-      )
-
-      repositoryCache.data = finalRepositoryDetails
-      return finalRepositoryDetails
+      return repositoryCache.data
     } catch (error) {
       console.error('Error fetching repository data:', error)
       repositoryCache.lastError =
@@ -127,6 +110,7 @@ export async function FetchRepositoryData(): Promise<RepositoryTypedef[]> {
       repositoryCache.data = []
       throw repositoryCache.lastError
     } finally {
+      // Clear the fetch promise from cache
       repositoryCache.fetchPromise = null
     }
   })()

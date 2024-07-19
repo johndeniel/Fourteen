@@ -11,7 +11,7 @@ import { GalleryCard } from '@/components/gallery-card'
 import { GalleryCardSkeleton } from '@/components/gallery-card-skeleton'
 import { GithubContribution } from '@/components/github-contribution'
 import { GithubContributionSkeleton } from '@/components/github-contribution-skeleton'
-import { RepositoryTypedef } from '@/lib/typedef/repository-typedef'
+import { RepositoryModel } from '@/lib/model/repository-model'
 import { SiteFooter } from '@/components/site-footer'
 
 interface AsyncDataResource<T> {
@@ -60,7 +60,7 @@ function createSuspenseResource<T>(
 
 type DataResources = {
   galleryData: AsyncDataResource<GalleryModel[]> | null
-  repositoryData: AsyncDataResource<RepositoryTypedef[]> | null
+  repositoryData: AsyncDataResource<RepositoryModel[]> | null
 }
 
 export default function HomePage(): React.ReactElement {
@@ -150,7 +150,7 @@ function ProjectGalleryContent({
 }
 
 interface GithubActivityContentProps {
-  resource: AsyncDataResource<RepositoryTypedef[]>
+  resource: AsyncDataResource<RepositoryModel[]>
 }
 
 function GithubActivityContent({
