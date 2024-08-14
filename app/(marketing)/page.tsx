@@ -1,12 +1,9 @@
-'use client'
-
-import { Suspense, useEffect, useState } from 'react'
+import { Suspense } from 'react'
 import { GradientBackgroundEffect } from '@/components/gradient-background'
 import { HeroSection } from '@/components/hero-section'
 import { GalleryModel } from '@/lib/model/gallery-model'
 import { FetchGalleryData } from '@/server/queries/gallery-data-service'
 import { FetchRepositoryData } from '@/server/queries/repository-data-service'
-import { LoadingSpinner } from '@/components/loading-spinner'
 import { GalleryCard } from '@/components/gallery-card'
 import { GalleryCardSkeleton } from '@/components/gallery-card-skeleton'
 import { GithubContribution } from '@/components/github-contribution'
@@ -14,71 +11,9 @@ import { GithubContributionSkeleton } from '@/components/github-contribution-ske
 import { RepositoryModel } from '@/lib/model/repository-model'
 import { SiteFooter } from '@/components/site-footer'
 
-interface AsyncDataResource<T> {
-  retrieve: () => T
-}
-
-/**
- * Creates an async data resource that can be used with React Suspense.
- * @template T The type of data the resource will hold.
- * @param {Promise<T>} asyncOperation The async operation to wrap.
- * @returns {AsyncDataResource<T>} An object with a retrieve method.
- */
-function createSuspenseResource<T>(
-  asyncOperation: Promise<T>,
-): AsyncDataResource<T> {
-  let status: 'pending' | 'success' | 'error' = 'pending'
-  let result: T | undefined
-  let error: Error | undefined
-
-  const suspender = asyncOperation.then(
-    (data) => {
-      status = 'success'
-      result = data
-    },
-    (e) => {
-      status = 'error'
-      error = e instanceof Error ? e : new Error(String(e))
-    },
-  )
-
-  return {
-    retrieve(): T {
-      switch (status) {
-        case 'pending':
-          throw suspender
-        case 'error':
-          throw error
-        case 'success':
-          return result as T
-        default:
-          throw new Error('Unexpected resource state')
-      }
-    },
-  }
-}
-
-type DataResources = {
-  galleryData: AsyncDataResource<GalleryModel[]> | null
-  repositoryData: AsyncDataResource<RepositoryModel[]> | null
-}
-
-export default function HomePage(): React.ReactElement {
-  const [dataResources, setDataResources] = useState<DataResources>({
-    galleryData: null,
-    repositoryData: null,
-  })
-
-  useEffect(() => {
-    setDataResources({
-      galleryData: createSuspenseResource(FetchGalleryData()),
-      repositoryData: createSuspenseResource(FetchRepositoryData()),
-    })
-  }, [])
-
-  if (!dataResources.galleryData || !dataResources.repositoryData) {
-    return <LoadingSpinner />
-  }
+export default async function HomePage() {
+  const galleryData = await FetchGalleryData()
+  const repositoryData = await FetchRepositoryData()
 
   return (
     <main className="relative h-full w-full items-center justify-center bg-white bg-dot-black/[0.2] sm:container dark:bg-black dark:bg-dot-white/[0.2]">
@@ -86,12 +21,12 @@ export default function HomePage(): React.ReactElement {
       <HeroSection />
       <ProjectGalleryHeader />
       <Suspense fallback={<GalleryCardSkeleton />}>
-        <ProjectGalleryContent resource={dataResources.galleryData} />
+        <ProjectGalleryContent galleryData={galleryData} />
       </Suspense>
       <section className="mt-10 p-4 sm:mt-12 md:mt-16 md:p-8 lg:mt-20 xl:mt-24">
         <GithubActivityHeader />
         <Suspense fallback={<GithubContributionSkeleton />}>
-          <GithubActivityContent resource={dataResources.repositoryData} />
+          <GithubActivityContent repositoryData={repositoryData} />
         </Suspense>
       </section>
       <SiteFooter />
@@ -99,7 +34,7 @@ export default function HomePage(): React.ReactElement {
   )
 }
 
-function ProjectGalleryHeader(): React.ReactElement {
+function ProjectGalleryHeader() {
   return (
     <section className="mb-4 p-4 md:p-8">
       <h1 className="relative z-10 mb-2 text-2xl font-bold sm:text-3xl md:text-4xl">
@@ -112,7 +47,7 @@ function ProjectGalleryHeader(): React.ReactElement {
   )
 }
 
-function GithubActivityHeader(): React.ReactElement {
+function GithubActivityHeader() {
   return (
     <section>
       <header className="mb-4 sm:mb-6 md:mb-8 lg:mb-10">
@@ -132,30 +67,24 @@ function GithubActivityHeader(): React.ReactElement {
   )
 }
 
-interface ProjectGalleryContentProps {
-  resource: AsyncDataResource<GalleryModel[]>
-}
-
 function ProjectGalleryContent({
-  resource,
-}: ProjectGalleryContentProps): React.ReactElement {
-  const galleryItems = resource.retrieve()
+  galleryData,
+}: {
+  galleryData: GalleryModel[]
+}) {
   return (
     <div className="relative z-10 grid grid-cols-1 justify-items-center gap-6 px-4 md:grid-cols-2 xl:grid-cols-3">
-      {galleryItems.map((item: GalleryModel) => (
+      {galleryData.map((item: GalleryModel) => (
         <GalleryCard key={item.id} gallery={item} />
       ))}
     </div>
   )
 }
 
-interface GithubActivityContentProps {
-  resource: AsyncDataResource<RepositoryModel[]>
-}
-
 function GithubActivityContent({
-  resource,
-}: GithubActivityContentProps): React.ReactElement {
-  const repositoryData = resource.retrieve()
+  repositoryData,
+}: {
+  repositoryData: RepositoryModel[]
+}) {
   return <GithubContribution repository={repositoryData} />
 }
