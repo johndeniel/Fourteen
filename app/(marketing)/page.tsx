@@ -92,8 +92,8 @@ interface ProjectGalleryContentProps {
 function ProjectGalleryContent({ galleryData }: ProjectGalleryContentProps) {
   return (
     <div className="relative z-10 grid grid-cols-1 justify-items-center gap-6 px-4 md:grid-cols-2 xl:grid-cols-3">
-      {galleryData.map((item: GalleryModel) => (
-        <GalleryCard key={item.id} gallery={item} />
+      {galleryData.map((item: GalleryModel, index: number) => (
+        <GalleryCard key={item.id} gallery={item} index={index} />
       ))}
     </div>
   )
