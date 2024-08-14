@@ -58,6 +58,7 @@ export function GalleryCard({ gallery }: GalleryCardProps): React.ReactElement {
           alt={`Project: ${gallery.title}`}
           loading="lazy"
           decoding="async"
+          quality={75}
         />
         <div className="absolute right-4 top-4">
           <TooltipProvider>

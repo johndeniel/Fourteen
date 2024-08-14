@@ -59,6 +59,7 @@ export function ArticleSection({
             className="h-auto w-full rounded-lg object-cover shadow-sm"
             priority={index === 0} // Set priority for the first image
             loading={index === 0 ? 'eager' : 'lazy'} // Lazy load non-priority images
+            quality={75}
           />
         </div>
         <div className="prose prose-sm sm:prose-base lg:prose-lg dark:prose-invert max-w-none">
