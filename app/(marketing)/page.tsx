@@ -1,18 +1,36 @@
-import { Suspense } from 'react'
+import { Suspense, lazy } from 'react'
 import { GradientBackgroundEffect } from '@/components/gradient-background'
 import { HeroSection } from '@/components/hero-section'
 import { GalleryModel } from '@/lib/model/gallery-model'
 import { FetchGalleryData } from '@/server/queries/gallery-data-service'
 import { FetchRepositoryData } from '@/server/queries/repository-data-service'
-import { GalleryCard } from '@/components/gallery-card'
-import { GalleryCardSkeleton } from '@/components/gallery-card-skeleton'
-import { GithubContribution } from '@/components/github-contribution'
-import { GithubContributionSkeleton } from '@/components/github-contribution-skeleton'
-import { RepositoryModel } from '@/lib/model/repository-model'
 import { SiteFooter } from '@/components/site-footer'
+import { RepositoryModel } from '@/lib/model/repository-model'
+
+// Lazy imports with correct types
+const GalleryCardSkeleton = lazy(() =>
+  import('@/components/gallery-card-skeleton').then((module) => ({
+    default: module.GalleryCardSkeleton,
+  })),
+)
+const GithubContributionSkeleton = lazy(() =>
+  import('@/components/github-contribution-skeleton').then((module) => ({
+    default: module.GithubContributionSkeleton,
+  })),
+)
+const GalleryCard = lazy(() =>
+  import('@/components/gallery-card').then((module) => ({
+    default: module.GalleryCard,
+  })),
+)
+const GithubContribution = lazy(() =>
+  import('@/components/github-contribution').then((module) => ({
+    default: module.GithubContribution,
+  })),
+)
 
 export default async function HomePage() {
-  const galleryData = await FetchGalleryData()
+  const galleryData: GalleryModel[] = await FetchGalleryData()
   const repositoryData = await FetchRepositoryData()
 
   return (
@@ -67,11 +85,11 @@ function GithubActivityHeader() {
   )
 }
 
-function ProjectGalleryContent({
-  galleryData,
-}: {
+interface ProjectGalleryContentProps {
   galleryData: GalleryModel[]
-}) {
+}
+
+function ProjectGalleryContent({ galleryData }: ProjectGalleryContentProps) {
   return (
     <div className="relative z-10 grid grid-cols-1 justify-items-center gap-6 px-4 md:grid-cols-2 xl:grid-cols-3">
       {galleryData.map((item: GalleryModel) => (
@@ -81,10 +99,10 @@ function ProjectGalleryContent({
   )
 }
 
-function GithubActivityContent({
-  repositoryData,
-}: {
+interface GithubActivityContentProps {
   repositoryData: RepositoryModel[]
-}) {
+}
+
+function GithubActivityContent({ repositoryData }: GithubActivityContentProps) {
   return <GithubContribution repository={repositoryData} />
 }

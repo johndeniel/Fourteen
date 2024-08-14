@@ -25,18 +25,28 @@ import {
   HoverCard,
 } from '@/components/ui/hover-card'
 
-interface GalleryModelProps {
+// Define a type for the techInfo
+interface TechInfo {
+  icon: string
+  tech: string
+  info: string
+  date: string
+}
+
+interface GalleryCardProps {
   gallery: GalleryModel
 }
 
-/**
- * GalleryCardComponent displays a card with gallery information.
- * It includes project image, title, description, and various statistics.
- * It also provides links to fork the project, view live demo, and read full details.
- */
-export function GalleryCard({
-  gallery,
-}: GalleryModelProps): React.ReactElement {
+export function GalleryCard({ gallery }: GalleryCardProps): React.ReactElement {
+  const getTechInfo = (index: number): TechInfo => {
+    return {
+      icon: gallery[`icon${index}` as keyof GalleryModel] as string,
+      tech: gallery[`itech${index}` as keyof GalleryModel] as string,
+      info: gallery[`info${index}` as keyof GalleryModel] as string,
+      date: gallery[`idate${index}` as keyof GalleryModel] as string,
+    }
+  }
+
   return (
     <Card className="w-full max-w-sm">
       <div className="relative">
@@ -44,25 +54,27 @@ export function GalleryCard({
           className="w-full rounded-t-lg object-cover"
           width={400}
           height={200}
-          src={gallery.getImg()}
-          alt="Picture of the project"
-          style={{
-            aspectRatio: '400/200',
-            objectFit: 'cover',
-          }}
+          src={gallery.img}
+          alt={`Project: ${gallery.title}`}
+          loading="lazy"
+          decoding="async"
         />
         <div className="absolute right-4 top-4">
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
-                <Link href={gallery.getFork()} rel="noreferrer">
+                <Link
+                  href={gallery.fork}
+                  rel="noopener noreferrer"
+                  aria-label={`Fork ${gallery.title}`}
+                >
                   <Button
                     className="toggle bg-white"
                     size="sm"
                     variant="outline"
                   >
-                    <GitForkIcon className="mr-2 h-4 w-4" />
-                    Fork
+                    <GitForkIcon className="mr-2 h-4 w-4" aria-hidden="true" />
+                    <span>Fork</span>
                   </Button>
                 </Link>
               </TooltipTrigger>
@@ -75,170 +87,78 @@ export function GalleryCard({
       </div>
       <CardHeader className="px-6 pt-4">
         <div className="flex justify-between">
-          <CardTitle className="text-2xl font-bold">
-            {gallery.getTitle()}
-          </CardTitle>
+          <CardTitle className="text-2xl font-bold">{gallery.title}</CardTitle>
           <div className="flex items-center gap-2 text-sm text-gray-500">
-            <StarIcon className="h-4 w-4 fill-primary" />
-            <span className="font-medium">{gallery.getStar()}</span>
+            <StarIcon className="h-4 w-4 fill-primary" aria-hidden="true" />
+            <span className="font-medium">{gallery.star}</span>
             <Separator className="h-4" orientation="vertical" />
-            <EyeIcon className="h-4 w-4" />
-            <span className="font-medium">{gallery.getView()}</span>
+            <EyeIcon className="h-4 w-4" aria-hidden="true" />
+            <span className="font-medium">{gallery.view}</span>
           </div>
         </div>
         <div className="flex items-center gap-2 text-sm text-gray-500">
-          <FolderIcon className="h-4 w-4" />
-          <span className="font-medium">{gallery.getCategory()}</span>
+          <FolderIcon className="h-4 w-4" aria-hidden="true" />
+          <span className="font-medium">{gallery.category}</span>
         </div>
       </CardHeader>
       <CardContent className="space-y-4 px-6">
         <p className="text-sm text-gray-500 dark:text-gray-400">
-          {gallery.getDescription()}
+          {gallery.description}
         </p>
 
         <div className="group flex items-center gap-4">
-          <HoverCard>
-            <HoverCardTrigger asChild>
-              <Avatar className="h-8 w-8 border transition-transform group-hover:scale-110">
-                <AvatarImage alt="JavaScript" src={gallery.getIcon1()} />
-                <AvatarFallback>{gallery.getItech1().charAt(0)}</AvatarFallback>
-              </Avatar>
-            </HoverCardTrigger>
-            <HoverCardContent className="w-80 rounded-lg bg-white shadow-lg dark:bg-gray-950">
-              <div className="flex justify-between space-x-4 p-4">
-                <Avatar>
-                  <AvatarImage src={gallery.getIcon1()} />
-                  <AvatarFallback>
-                    {gallery.getItech1().charAt(0)}
-                  </AvatarFallback>
-                </Avatar>
-                <div className="space-y-1">
-                  <h4 className="text-sm font-semibold">
-                    {gallery.getItech1()}
-                  </h4>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">
-                    {gallery.getInfo1()}
-                  </p>
-                  <div className="flex items-center pt-2">
-                    <CalendarDaysIcon className="mr-2 h-4 w-4 opacity-70" />
-                    <span className="text-xs text-gray-500 dark:text-gray-400">
-                      {gallery.getIdate1()}
-                    </span>
+          {[1, 2, 3, 4].map((index) => {
+            const techInfo = getTechInfo(index)
+            return (
+              <HoverCard key={index}>
+                <HoverCardTrigger asChild>
+                  <Avatar className="h-8 w-8 border transition-transform group-hover:scale-110">
+                    <AvatarImage alt={techInfo.tech} src={techInfo.icon} />
+                    <AvatarFallback>{techInfo.tech.charAt(0)}</AvatarFallback>
+                  </Avatar>
+                </HoverCardTrigger>
+                <HoverCardContent className="w-80 rounded-lg bg-white shadow-lg dark:bg-gray-950">
+                  <div className="flex justify-between space-x-4 p-4">
+                    <Avatar>
+                      <AvatarImage src={techInfo.icon} alt={techInfo.tech} />
+                      <AvatarFallback>{techInfo.tech.charAt(0)}</AvatarFallback>
+                    </Avatar>
+                    <div className="space-y-1">
+                      <h4 className="text-sm font-semibold">{techInfo.tech}</h4>
+                      <p className="text-sm text-gray-500 dark:text-gray-400">
+                        {techInfo.info}
+                      </p>
+                      <div className="flex items-center pt-2">
+                        <CalendarDaysIcon
+                          className="mr-2 h-4 w-4 opacity-70"
+                          aria-hidden="true"
+                        />
+                        <span className="text-xs text-gray-500 dark:text-gray-400">
+                          {techInfo.date}
+                        </span>
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </div>
-            </HoverCardContent>
-          </HoverCard>
-          <HoverCard>
-            <HoverCardTrigger asChild>
-              <Avatar className="h-8 w-8 border transition-transform group-hover:scale-110">
-                <AvatarImage alt="React" src={gallery.getIcon2()} />
-                <AvatarFallback>{gallery.getItech2().charAt(0)}</AvatarFallback>
-              </Avatar>
-            </HoverCardTrigger>
-            <HoverCardContent className="w-80 rounded-lg bg-white shadow-lg dark:bg-gray-950">
-              <div className="flex justify-between space-x-4 p-4">
-                <Avatar>
-                  <AvatarImage src={gallery.getIcon2()} />
-                  <AvatarFallback>
-                    {gallery.getItech2().charAt(0)}
-                  </AvatarFallback>
-                </Avatar>
-                <div className="space-y-1">
-                  <h4 className="text-sm font-semibold">
-                    {gallery.getItech2()}
-                  </h4>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">
-                    {gallery.getInfo2()}
-                  </p>
-                  <div className="flex items-center pt-2">
-                    <CalendarDaysIcon className="mr-2 h-4 w-4 opacity-70" />
-                    <span className="text-xs text-gray-500 dark:text-gray-400">
-                      {gallery.getIdate2()}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </HoverCardContent>
-          </HoverCard>
-          <HoverCard>
-            <HoverCardTrigger asChild>
-              <Avatar className="h-8 w-8 border transition-transform group-hover:scale-110">
-                <AvatarImage alt="Tailwind CSS" src={gallery.getIcon3()} />
-                <AvatarFallback>{gallery.getItech3().charAt(0)}</AvatarFallback>
-              </Avatar>
-            </HoverCardTrigger>
-            <HoverCardContent className="w-80 rounded-lg bg-white shadow-lg dark:bg-gray-950">
-              <div className="flex justify-between space-x-4 p-4">
-                <Avatar>
-                  <AvatarImage src={gallery.getIcon3()} />
-                  <AvatarFallback>
-                    {gallery.getItech3().charAt(0)}
-                  </AvatarFallback>
-                </Avatar>
-                <div className="space-y-1">
-                  <h4 className="text-sm font-semibold">
-                    {gallery.getItech3()}
-                  </h4>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">
-                    {gallery.getInfo3()}
-                  </p>
-                  <div className="flex items-center pt-2">
-                    <CalendarDaysIcon className="mr-2 h-4 w-4 opacity-70" />
-                    <span className="text-xs text-gray-500 dark:text-gray-400">
-                      {gallery.getIdate3()}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </HoverCardContent>
-          </HoverCard>
-          <HoverCard>
-            <HoverCardTrigger asChild>
-              <Avatar className="h-8 w-8 border transition-transform group-hover:scale-110">
-                <AvatarImage alt="Node.js" src={gallery.getIcon4()} />
-                <AvatarFallback>{gallery.getItech4().charAt(0)}</AvatarFallback>
-              </Avatar>
-            </HoverCardTrigger>
-            <HoverCardContent className="w-80 rounded-lg bg-white shadow-lg dark:bg-gray-950">
-              <div className="flex justify-between space-x-4 p-4">
-                <Avatar>
-                  <AvatarImage src={gallery.getIcon4()} />
-                  <AvatarFallback>
-                    {gallery.getItech4().charAt(0)}
-                  </AvatarFallback>
-                </Avatar>
-                <div className="space-y-1">
-                  <h4 className="text-sm font-semibold">
-                    {gallery.getItech4()}
-                  </h4>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">
-                    {gallery.getInfo4()}
-                  </p>
-                  <div className="flex items-center pt-2">
-                    <CalendarDaysIcon className="mr-2 h-4 w-4 opacity-70" />
-                    <span className="text-xs text-gray-500 dark:text-gray-400">
-                      {gallery.getIdate4()}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </HoverCardContent>
-          </HoverCard>
+                </HoverCardContent>
+              </HoverCard>
+            )
+          })}
         </div>
         <div className="flex items-center justify-between gap-4">
           <div className="flex gap-4">
             <Link
               className="inline-flex h-10 items-center justify-center rounded-md bg-gray-900 px-4 py-2 text-sm font-medium text-gray-50 hover:bg-gray-900/90"
-              rel="noreferrer"
-              href={gallery.getLive()}
+              rel="noopener noreferrer"
+              href={gallery.live}
+              aria-label={`Live demo of ${gallery.title}`}
             >
               Live Demo
             </Link>
             <Link
               className="inline-flex h-10 items-center justify-center rounded-md border bg-white px-4 py-2 text-sm font-medium hover:bg-gray-100"
-              rel="noreferrer"
-              href={`read/${gallery.getTitle().toLocaleLowerCase()}`}
+              rel="noopener noreferrer"
+              href={`read/${gallery.title.toLowerCase()}`}
+              aria-label={`Read more about ${gallery.title}`}
             >
               Full Read
             </Link>
