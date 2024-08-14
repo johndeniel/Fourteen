@@ -25,7 +25,6 @@ import {
   HoverCard,
 } from '@/components/ui/hover-card'
 
-// Define a type for the techInfo
 interface TechInfo {
   icon: string
   tech: string
@@ -35,9 +34,13 @@ interface TechInfo {
 
 interface GalleryCardProps {
   gallery: GalleryModel
+  index: number
 }
 
-export function GalleryCard({ gallery }: GalleryCardProps): React.ReactElement {
+export function GalleryCard({
+  gallery,
+  index,
+}: GalleryCardProps): React.ReactElement {
   const getTechInfo = (index: number): TechInfo => {
     return {
       icon: gallery[`icon${index}` as keyof GalleryModel] as string,
@@ -46,6 +49,8 @@ export function GalleryCard({ gallery }: GalleryCardProps): React.ReactElement {
       date: gallery[`idate${index}` as keyof GalleryModel] as string,
     }
   }
+
+  const isFirstCard = index === 0
 
   return (
     <Card className="w-full max-w-sm">
@@ -56,9 +61,13 @@ export function GalleryCard({ gallery }: GalleryCardProps): React.ReactElement {
           height={200}
           src={gallery.img}
           alt={`Project: ${gallery.title}`}
-          loading="lazy"
+          priority={isFirstCard}
+          loading={isFirstCard ? 'eager' : 'lazy'}
           decoding="async"
           quality={75}
+          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+          placeholder="blur"
+          blurDataURL="/placeholder.svg"
         />
         <div className="absolute right-4 top-4">
           <TooltipProvider>
@@ -108,10 +117,10 @@ export function GalleryCard({ gallery }: GalleryCardProps): React.ReactElement {
         </p>
 
         <div className="group flex items-center gap-4">
-          {[1, 2, 3, 4].map((index) => {
-            const techInfo = getTechInfo(index)
+          {[1, 2, 3, 4].map((techIndex) => {
+            const techInfo = getTechInfo(techIndex)
             return (
-              <HoverCard key={index}>
+              <HoverCard key={techIndex}>
                 <HoverCardTrigger asChild>
                   <Avatar className="h-8 w-8 border transition-transform group-hover:scale-110">
                     <AvatarImage alt={techInfo.tech} src={techInfo.icon} />
