@@ -2,15 +2,12 @@ import React from 'react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar'
 import { GitCommitVerticalIcon, GithubIconOutline } from '@/lib/icons'
-import { RepositoryModel } from '@/lib/model/repository-model'
+import { RepositoryTypedef } from '@/lib/typedef/repository-typedef'
 
 interface GithubContributionProps {
-  repository: RepositoryModel[]
+  repository: RepositoryTypedef[]
 }
 
-/**
- * A functional component to render a list of GitHub repository contributions.
- */
 export function GithubContribution({
   repository,
 }: GithubContributionProps): React.ReactElement {
@@ -31,14 +28,14 @@ export function GithubContribution({
                       aria-hidden="true"
                     />
                     <p className="text-sm font-semibold">
-                      {repo.getRepositoryName()}
+                      {repo.repository_name}
                     </p>
                   </div>
                   <p className="mb-3 text-sm text-muted-foreground">
-                    {repo.getRepositoryDescription()}
+                    {repo.repository_description}
                   </p>
                   <div className="w-full">
-                    {repo.getCommitMessage().map((commit, commitIndex) => (
+                    {repo.commit_message.map((commit, commitIndex) => (
                       <div
                         key={commitIndex}
                         className="mt-2 flex text-xs text-muted-foreground"
@@ -54,12 +51,12 @@ export function GithubContribution({
                   <div className="mt-4 flex items-center text-xs text-muted-foreground">
                     <Avatar className="mr-2 h-6 w-6">
                       <AvatarImage
-                        src={repo.getAuthorAvatarUrl()}
-                        alt={`${repo.getAuthorName()}'s avatar`}
+                        src={repo.author_avatar_url}
+                        alt={`${repo.author_name}'s avatar`}
                       />
-                      <AvatarFallback>{repo.getAuthorName()}</AvatarFallback>
+                      <AvatarFallback>{repo.author_name}</AvatarFallback>
                     </Avatar>
-                    <span>Updated on {repo.getLastUpdated()}</span>
+                    <span>Updated on {repo.last_updated}</span>
                   </div>
                 </CardContent>
               </Card>

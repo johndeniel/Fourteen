@@ -5,7 +5,7 @@ import { GalleryTypedef } from '@/lib/typedef/gallery-typedef'
 import { FetchGalleryData } from '@/server/queries/gallery-data-service'
 import { FetchRepositoryData } from '@/server/queries/repository-data-service'
 import { SiteFooter } from '@/components/site-footer'
-import { RepositoryModel } from '@/lib/model/repository-model'
+import { RepositoryTypedef } from '@/lib/typedef/repository-typedef'
 
 // Lazy imports with correct types
 const GalleryCardSkeleton = lazy(() =>
@@ -100,7 +100,7 @@ function ProjectGalleryContent({ galleryData }: ProjectGalleryContentProps) {
 }
 
 interface GithubActivityContentProps {
-  repositoryData: RepositoryModel[]
+  repositoryData: RepositoryTypedef[]
 }
 
 function GithubActivityContent({ repositoryData }: GithubActivityContentProps) {

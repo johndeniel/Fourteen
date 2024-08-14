@@ -1,10 +1,9 @@
-import { RepositoryModel } from '@/lib/model/repository-model'
 import { RepositoryTypedef } from '@/lib/typedef/repository-typedef'
 
 // Define the structure for the repository cache
 interface RepositoryCache {
-  data: RepositoryModel[] | null
-  fetchPromise: Promise<RepositoryModel[]> | null
+  data: RepositoryTypedef[] | null
+  fetchPromise: Promise<RepositoryTypedef[]> | null
   lastError: Error | null
 }
 
@@ -21,9 +20,9 @@ const REPOS_PER_PAGE = 100
 
 /**
  * Fetches repository data from GitHub API
- * @returns Promise<RepositoryModel[]>
+ * @returns Promise<RepositoryTypedef[]>
  */
-export async function FetchRepositoryData(): Promise<RepositoryModel[]> {
+export async function FetchRepositoryData(): Promise<RepositoryTypedef[]> {
   // Return cached data if available
   if (repositoryCache.data) return repositoryCache.data
   // Return ongoing fetch promise if exists
@@ -66,7 +65,7 @@ export async function FetchRepositoryData(): Promise<RepositoryModel[]> {
       )
 
       // Fetch commit details for each repository
-      const repoDetails = await Promise.all(
+      const repoDetails: RepositoryTypedef[] = await Promise.all(
         uniqueRepos.map(async (repo) => {
           const commits = await fetch(
             `${GITHUB_API_BASE_URL}/repos/${repo.owner.login}/${repo.name}/commits`,
@@ -74,8 +73,8 @@ export async function FetchRepositoryData(): Promise<RepositoryModel[]> {
           ).then((r) => r.json())
           const latestCommit = commits[0]
 
-          // Create RepositoryTypedef object
-          const repoData: RepositoryTypedef = {
+          // Create and return RepositoryTypedef object
+          return {
             repository_name: repo.name,
             repository_description: repo.description,
             commit_message: commits
@@ -91,16 +90,14 @@ export async function FetchRepositoryData(): Promise<RepositoryModel[]> {
               day: 'numeric',
             }),
           }
-          // Create and return RepositoryModel instance
-          return new RepositoryModel(repoData)
         }),
       )
 
       // Sort repositories by last update time (most recent first)
       repositoryCache.data = repoDetails.sort(
         (a, b) =>
-          new Date(b.getLastUpdated()).getTime() -
-          new Date(a.getLastUpdated()).getTime(),
+          new Date(b.last_updated).getTime() -
+          new Date(a.last_updated).getTime(),
       )
       return repositoryCache.data
     } catch (error) {
