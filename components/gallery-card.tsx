@@ -3,7 +3,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
-import { GalleryModel } from '@/lib/model/gallery-model'
+import { GalleryTypedef } from '@/lib/typedef/gallery-typedef'
 import { AvatarImage, AvatarFallback, Avatar } from '@/components/ui/avatar'
 import { CardTitle, CardHeader, CardContent, Card } from '@/components/ui/card'
 import {
@@ -33,7 +33,7 @@ interface TechInfo {
 }
 
 interface GalleryCardProps {
-  gallery: GalleryModel
+  gallery: GalleryTypedef
   index: number
 }
 
@@ -43,10 +43,10 @@ export function GalleryCard({
 }: GalleryCardProps): React.ReactElement {
   const getTechInfo = (index: number): TechInfo => {
     return {
-      icon: gallery[`icon${index}` as keyof GalleryModel] as string,
-      tech: gallery[`itech${index}` as keyof GalleryModel] as string,
-      info: gallery[`info${index}` as keyof GalleryModel] as string,
-      date: gallery[`idate${index}` as keyof GalleryModel] as string,
+      icon: gallery[`icon${index}` as keyof GalleryTypedef] as string,
+      tech: gallery[`itech${index}` as keyof GalleryTypedef] as string,
+      info: gallery[`info${index}` as keyof GalleryTypedef] as string,
+      date: gallery[`idate${index}` as keyof GalleryTypedef] as string,
     }
   }
 

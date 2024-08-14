@@ -1,7 +1,7 @@
 import { Suspense, lazy } from 'react'
 import { GradientBackgroundEffect } from '@/components/gradient-background'
 import { HeroSection } from '@/components/hero-section'
-import { GalleryModel } from '@/lib/model/gallery-model'
+import { GalleryTypedef } from '@/lib/typedef/gallery-typedef'
 import { FetchGalleryData } from '@/server/queries/gallery-data-service'
 import { FetchRepositoryData } from '@/server/queries/repository-data-service'
 import { SiteFooter } from '@/components/site-footer'
@@ -30,7 +30,7 @@ const GithubContribution = lazy(() =>
 )
 
 export default async function HomePage() {
-  const galleryData: GalleryModel[] = await FetchGalleryData()
+  const galleryData: GalleryTypedef[] = await FetchGalleryData()
   const repositoryData = await FetchRepositoryData()
 
   return (
@@ -86,13 +86,13 @@ function GithubActivityHeader() {
 }
 
 interface ProjectGalleryContentProps {
-  galleryData: GalleryModel[]
+  galleryData: GalleryTypedef[]
 }
 
 function ProjectGalleryContent({ galleryData }: ProjectGalleryContentProps) {
   return (
     <div className="relative z-10 grid grid-cols-1 justify-items-center gap-6 px-4 md:grid-cols-2 xl:grid-cols-3">
-      {galleryData.map((item: GalleryModel, index: number) => (
+      {galleryData.map((item: GalleryTypedef, index: number) => (
         <GalleryCard key={item.id} gallery={item} index={index} />
       ))}
     </div>

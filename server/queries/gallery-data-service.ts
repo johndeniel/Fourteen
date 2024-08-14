@@ -1,36 +1,22 @@
 import { ref, get, DatabaseReference } from 'firebase/database'
-import { GalleryModel } from '@/lib/model/gallery-model'
 import { GalleryTypedef } from '@/lib/typedef/gallery-typedef'
 import database from '@/lib/firebase-config'
 
-/**
- * Represents the structure of the gallery cache.
- */
 interface GalleryCache {
-  data: GalleryModel[] | null
-  fetchPromise: Promise<GalleryModel[]> | null
+  data: GalleryTypedef[] | null
+  fetchPromise: Promise<GalleryTypedef[]> | null
   lastError: Error | null
 }
 
-/**
- * Cache to store fetched gallery data.
- */
 const galleryCache: GalleryCache = {
   data: null,
   fetchPromise: null,
   lastError: null,
 }
 
-/**
- * Firebase database path for gallery.
- */
 const GALLERY_DB_PATH = 'gallery'
 
-/**
- * Fetches gallery data from Firebase and caches the result.
- * @returns A promise that resolves to an array of GalleryModel.
- */
-export async function FetchGalleryData(): Promise<GalleryModel[]> {
+export async function FetchGalleryData(): Promise<GalleryTypedef[]> {
   if (galleryCache.data !== null) {
     return galleryCache.data
   }
@@ -45,9 +31,9 @@ export async function FetchGalleryData(): Promise<GalleryModel[]> {
     .then((snapshot) => {
       if (snapshot.exists()) {
         const galleryDataMap = snapshot.val() as Record<string, GalleryTypedef>
-        const galleryData = Object.values(galleryDataMap)
-          .map((item) => new GalleryModel(item))
-          .sort((a, b) => a.id - b.id)
+        const galleryData = Object.values(galleryDataMap).sort(
+          (a, b) => a.id - b.id,
+        )
         galleryCache.data = galleryData
         return galleryData
       } else {
@@ -59,7 +45,7 @@ export async function FetchGalleryData(): Promise<GalleryModel[]> {
       console.error('Error fetching gallery data:', error)
       galleryCache.lastError = error
       galleryCache.data = []
-      throw error // Re-throw the error to allow the caller to handle it
+      throw error
     })
     .finally(() => {
       galleryCache.fetchPromise = null
