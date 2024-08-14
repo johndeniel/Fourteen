@@ -10,12 +10,15 @@ interface ArticleCache {
   data: ArticleModel[] | null
   fetchPromise: Promise<ArticleModel[] | null> | null
   lastError: Error | null
+  cacheTime: number
 }
 
 /**
- * Cache to store fetched articles.
+ * Cache to store fetched articles with a 5-minute expiration time.
  */
 const articlesCache: Record<string, ArticleCache> = {}
+
+const CACHE_EXPIRATION = 5 * 60 * 1000 // 5 minutes in milliseconds
 
 /**
  * Firebase database path for articles.
@@ -30,19 +33,26 @@ const ARTICLE_DB_PATH = 'article'
 export async function FetchArticleData(
   articleId: string,
 ): Promise<ArticleModel[] | null> {
+  const currentTime = Date.now()
+
+  if (
+    articlesCache[articleId] &&
+    articlesCache[articleId].data &&
+    currentTime - articlesCache[articleId].cacheTime < CACHE_EXPIRATION
+  ) {
+    return articlesCache[articleId].data
+  }
+
   if (!articlesCache[articleId]) {
     articlesCache[articleId] = {
       data: null,
       fetchPromise: null,
       lastError: null,
+      cacheTime: 0,
     }
   }
 
   const articleCacheEntry = articlesCache[articleId]
-
-  if (articleCacheEntry.data !== null) {
-    return articleCacheEntry.data
-  }
 
   if (articleCacheEntry.fetchPromise) {
     return articleCacheEntry.fetchPromise
@@ -58,6 +68,7 @@ export async function FetchArticleData(
           (articleData) => new ArticleModel(articleData),
         )
         articleCacheEntry.data = articles
+        articleCacheEntry.cacheTime = currentTime
         return articles
       } else {
         articleCacheEntry.data = null

@@ -8,9 +8,8 @@ interface ArticleSectionProps {
 }
 
 /**
- * ArticleSectionComponent renders an article section with a header,
- * image, and paragraphs. It supports different formats of paragraphs,
- * including arrays, objects, and strings.
+ * ArticleSection renders a section with a header, image, and paragraphs.
+ * Supports different formats of paragraphs including arrays, objects, and strings.
  */
 export function ArticleSection({
   section,
@@ -43,13 +42,14 @@ export function ArticleSection({
   }
 
   return (
-    <article>
+    <section aria-labelledby={`section-header-${index}`}>
       <div className="p-6 sm:p-8">
-        {/* Render the section header */}
-        <h2 className="mb-4 text-2xl font-bold text-gray-900 dark:text-white sm:text-3xl lg:text-4xl">
+        <h2
+          id={`section-header-${index}`}
+          className="mb-4 text-2xl font-bold text-gray-900 dark:text-white sm:text-3xl lg:text-4xl"
+        >
           {section.getHeader()}
         </h2>
-        {/* Render the section image */}
         <div className="mb-6 sm:mb-8">
           <Image
             src={section.getImage()}
@@ -58,13 +58,13 @@ export function ArticleSection({
             height={500}
             className="h-auto w-full rounded-lg object-cover shadow-sm"
             priority={index === 0} // Set priority for the first image
+            loading={index === 0 ? 'eager' : 'lazy'} // Lazy load non-priority images
           />
         </div>
-        {/* Render the section paragraphs */}
         <div className="prose prose-sm sm:prose-base lg:prose-lg dark:prose-invert max-w-none">
           {renderParagraphs()}
         </div>
       </div>
-    </article>
+    </section>
   )
 }
