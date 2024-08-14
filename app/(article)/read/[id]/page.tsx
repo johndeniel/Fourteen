@@ -1,4 +1,4 @@
-import React, { Suspense, lazy } from 'react'
+import { Suspense, lazy } from 'react'
 import { GradientBackgroundEffect } from '@/components/gradient-background'
 import { TracingBeam } from '@/components/ui/tracing-beam'
 import { FetchArticleData } from '@/server/queries/article-data-service'

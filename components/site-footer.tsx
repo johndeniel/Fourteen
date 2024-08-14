@@ -20,6 +20,7 @@ export function SiteFooter(): React.ReactElement {
             target="_blank"
             rel="noreferrer"
             className="font-semibold"
+            aria-label="Follow jaydeeclouds on Instagram"
           >
             jaydeeclouds
           </Link>
@@ -35,6 +36,7 @@ export function SiteFooter(): React.ReactElement {
                 variant: 'ghost',
               }),
             )}
+            aria-label="Visit John Deniel's GitHub profile"
           >
             <GitHubIcon className="size-5" />
           </Link>
