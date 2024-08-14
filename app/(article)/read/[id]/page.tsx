@@ -48,6 +48,7 @@ export default async function ArticlePage({
                   key={`section-${index}`}
                   section={section}
                   index={index}
+                  totalSections={sections.length}
                 />
               ))}
             </article>
