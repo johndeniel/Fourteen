@@ -1,9 +1,9 @@
 import React from 'react'
-import { ArticleModel } from '@/lib/model/article-model'
+import { ArticleTypedef } from '@/lib/typedef/article-typedef'
 import Image from 'next/image'
 
 interface ArticleSectionProps {
-  section: ArticleModel
+  section: ArticleTypedef
   index: number
   totalSections: number
 }
@@ -19,7 +19,7 @@ export function ArticleSection({
   totalSections,
 }: ArticleSectionProps): React.ReactElement {
   const renderParagraphs = () => {
-    const paragraphs = section.getParagraphs()
+    const paragraphs = section.paragraphs
 
     if (Array.isArray(paragraphs)) {
       return paragraphs.map((paragraph, pIndex) => (
@@ -54,12 +54,12 @@ export function ArticleSection({
           id={`section-header-${index}`}
           className="mb-4 text-2xl font-bold text-gray-900 dark:text-white sm:text-3xl lg:text-4xl"
         >
-          {section.getHeader()}
+          {section.header}
         </h2>
         <div className="mb-6 sm:mb-8">
           <Image
-            src={section.getImage()}
-            alt={`Illustration for ${section.getHeader()}`}
+            src={section.image}
+            alt={`Illustration for ${section.header}`}
             width={1000}
             height={500}
             className="h-auto w-full rounded-lg object-cover shadow-sm"

@@ -1,5 +1,4 @@
 import { ref, get, child, DatabaseReference } from 'firebase/database'
-import { ArticleModel } from '@/lib/model/article-model'
 import { ArticleTypedef } from '@/lib/typedef/article-typedef'
 import database from '@/lib/firebase-config'
 
@@ -7,8 +6,8 @@ import database from '@/lib/firebase-config'
  * Represents the structure of the article cache.
  */
 interface ArticleCache {
-  data: ArticleModel[] | null
-  fetchPromise: Promise<ArticleModel[] | null> | null
+  data: ArticleTypedef[] | null
+  fetchPromise: Promise<ArticleTypedef[] | null> | null
   lastError: Error | null
   cacheTime: number
 }
@@ -28,11 +27,11 @@ const ARTICLE_DB_PATH = 'article'
 /**
  * Fetches article data from Firebase and caches the result.
  * @param articleId - The ID of the article to fetch.
- * @returns A promise that resolves to an array of ArticleModel or null if not found.
+ * @returns A promise that resolves to an array of ArticleTypedef or null if not found.
  */
 export async function FetchArticleData(
   articleId: string,
-): Promise<ArticleModel[] | null> {
+): Promise<ArticleTypedef[] | null> {
   const currentTime = Date.now()
 
   if (
@@ -64,9 +63,7 @@ export async function FetchArticleData(
     .then((snapshot) => {
       if (snapshot.exists()) {
         const data = snapshot.val() as Record<string, ArticleTypedef>
-        const articles = Object.values(data).map(
-          (articleData) => new ArticleModel(articleData),
-        )
+        const articles = Object.values(data)
         articleCacheEntry.data = articles
         articleCacheEntry.cacheTime = currentTime
         return articles
