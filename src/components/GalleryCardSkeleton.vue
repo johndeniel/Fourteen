@@ -47,13 +47,16 @@ const AVATAR_COUNT = 4
         <div class="flex items-start justify-between gap-3">
           <Skeleton class="h-6 w-2/3" />
           <div
-            class="flex flex-shrink-0 items-center gap-3 text-sm text-gray-500"
+            class="flex h-5 flex-shrink-0 items-center gap-3 text-sm text-gray-500"
           >
             <div class="flex items-center gap-1">
               <Star class="fill-primary h-4 w-4 opacity-50" />
               <Skeleton class="h-4 w-6" />
             </div>
-            <Separator class="h-4 opacity-50" orientation="vertical" />
+            <Separator
+              class="h-4 w-px bg-gray-300 opacity-50"
+              orientation="vertical"
+            />
             <div class="flex items-center gap-1">
               <Eye class="h-4 w-4 opacity-50" />
               <Skeleton class="h-4 w-6" />

@@ -1,10 +1,5 @@
 <script setup lang="ts">
-import {
-  Card,
-  CardHeader,
-  CardTitle, 
-  CardContent
-} from '@/components/ui/card'
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar'
 import { GitCommitVertical } from 'lucide-vue-next'
 import type { RepositoryTypedef } from '@/lib/typedef/repository-typedef'
@@ -38,12 +33,12 @@ defineProps<GithubContributionProps>()
                 </CardTitle>
               </div>
               <p
-                class="text-muted-foreground line-clamp-3 text-sm leading-relaxed mt-2"
+                class="text-muted-foreground mt-2 line-clamp-3 text-sm leading-relaxed"
               >
                 {{ repo.repository_description }}
               </p>
             </CardHeader>
-            
+
             <CardContent class="flex flex-col pt-0">
               <div class="space-y-3">
                 <div class="space-y-2">

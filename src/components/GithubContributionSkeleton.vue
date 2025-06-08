@@ -32,7 +32,9 @@ const COMMIT_COUNT = 3
                     :key="commitIndex"
                     class="text-muted-foreground mt-2 flex text-xs"
                   >
-                    <GitCommitVertical class="mt-1 mr-2 h-4 w-4 flex-shrink-0" />
+                    <GitCommitVertical
+                      class="mt-1 mr-2 h-4 w-4 flex-shrink-0"
+                    />
                     <Skeleton class="h-3 w-5/6" />
                   </div>
                 </div>
