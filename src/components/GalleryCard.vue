@@ -95,12 +95,11 @@ const handleAvatarError = (event: Event) => {
                 rel="noopener noreferrer"
                 :aria-label="`Fork ${gallery.title}`"
               >
-                <Button
-                  class="border border-gray-200 bg-white shadow-sm"
-                  size="sm"
+               <Button
+                  class="border border-gray-200 bg-white shadow-sm flex items-center justify-center gap-1 px-4 py-2"
                   variant="outline"
                 >
-                  <GitForkIcon class="mr-1.5 h-3.5 w-3.5" aria-hidden="true" />
+                  <GitForkIcon class="h-4 w-4" aria-hidden="true" />
                   <span class="text-sm font-medium">Fork</span>
                 </Button>
               </a>
@@ -113,7 +112,7 @@ const handleAvatarError = (event: Event) => {
       </div>
     </div>
 
-    <CardHeader class="px-5 pt-4 pb-2">
+    <CardHeader class="px-5 pt-4">
       <div class="flex items-start justify-between gap-3">
         <CardTitle
           class="line-clamp-2 text-xl leading-tight font-bold tracking-tight text-gray-900"
@@ -210,7 +209,7 @@ const handleAvatarError = (event: Event) => {
 
       <div class="mt-auto flex items-center gap-2">
         <a
-          class="inline-flex h-10 flex-1 items-center justify-center rounded-md bg-gray-900 text-base font-semibold text-white transition-colors hover:bg-gray-800"
+          class="inline-flex h-9 flex-1 items-center justify-center rounded-md bg-gray-900 text-sm font-semibold text-white transition-colors hover:bg-gray-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-950 focus-visible:ring-offset-2"
           target="_blank"
           rel="noopener noreferrer"
           :href="gallery.live"
@@ -219,7 +218,7 @@ const handleAvatarError = (event: Event) => {
           Live Demo
         </a>
         <RouterLink
-          class="inline-flex h-10 flex-1 items-center justify-center rounded-md border border-gray-300 bg-white text-base font-semibold text-gray-700 transition-colors hover:bg-gray-50"
+          class="inline-flex h-9 flex-1 items-center justify-center rounded-md border border-gray-300 bg-white text-sm font-semibold text-gray-700 transition-colors hover:bg-gray-100 hover:border-gray-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-950 focus-visible:ring-offset-2"
           :to="{ name: 'article', params: { id: gallery.title.toLowerCase() } }"
           :aria-label="`Read more about ${gallery.title}`"
         >

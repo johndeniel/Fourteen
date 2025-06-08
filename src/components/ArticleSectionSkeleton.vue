@@ -1,60 +1,56 @@
+<script setup lang="ts">
+import { Skeleton } from '@/components/ui/skeleton'
+
+interface ArticleSectionSkeletonProps {
+  sectionCount?: number
+  paragraphCount?: number
+}
+
+const { sectionCount = 1, paragraphCount = 1} = defineProps<ArticleSectionSkeletonProps>()
+</script>
+
 <template>
-  <div class="animate-pulse">
+  <div>
     <div
       v-for="section in sectionCount"
       :key="`skeleton-${section}`"
-      class="mb-8 p-6 sm:p-8"
+      class="scroll-mt-16 py-8 sm:py-12"
     >
-      <!-- Header skeleton -->
-      <div class="mb-4">
-        <div class="mb-2 h-8 w-3/4 rounded bg-gray-300 dark:bg-gray-600"></div>
-      </div>
+      <div class="mx-auto max-w-4xl p-4 sm:p-8">
+        <!-- Header skeleton -->
+        <header class="mb-8 text-left">
+          <Skeleton class="h-8 w-3/4 sm:h-10 lg:h-12" />
+        </header>
 
-      <!-- Image skeleton -->
-      <div class="mb-6 sm:mb-8">
-        <div
-          class="h-48 w-full rounded-lg bg-gray-300 sm:h-64 dark:bg-gray-600"
-        ></div>
-      </div>
+        <!-- Image skeleton -->
+        <figure class="relative mb-10 w-full overflow-hidden rounded-xl shadow-lg">
+          <Skeleton class="aspect-video w-full rounded-xl" />
+        </figure>
 
-      <!-- Content skeleton -->
-      <div class="space-y-3 sm:space-y-4">
-        <div
-          v-for="paragraph in paragraphCount"
-          :key="`paragraph-${paragraph}`"
-          class="space-y-2"
-        >
-          <div class="h-4 w-full rounded bg-gray-300 dark:bg-gray-600"></div>
-          <div class="h-4 w-5/6 rounded bg-gray-300 dark:bg-gray-600"></div>
-          <div class="h-4 w-4/5 rounded bg-gray-300 dark:bg-gray-600"></div>
+        <!-- Content skeleton -->
+        <div class="prose prose-base sm:prose-lg lg:prose-xl max-w-none">
+          <div class="space-y-4 sm:space-y-5">
+            <div
+              v-for="paragraph in paragraphCount"
+              :key="`paragraph-${paragraph}`"
+              class="space-y-2"
+            >
+              <!-- First line of paragraph -->
+              <Skeleton class="h-4 w-full" />
+              <!-- Second line of paragraph -->
+              <Skeleton class="h-4 w-11/12" />
+              <!-- Third line of paragraph -->
+              <Skeleton class="h-4 w-5/6" />
+              <!-- Fourth line of paragraph (shorter to simulate end of paragraph) -->
+              <Skeleton class="h-4 w-3/4" />
+            </div>
+          </div>
         </div>
       </div>
     </div>
   </div>
 </template>
 
-<script setup lang="ts">
-interface ArticleSectionSkeletonProps {
-  sectionCount?: number
-  paragraphCount?: number
-}
-
-const { sectionCount = 3, paragraphCount = 4 } =
-  defineProps<ArticleSectionSkeletonProps>()
-</script>
-
 <style scoped>
-.animate-pulse {
-  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-}
-
-@keyframes pulse {
-  0%,
-  100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.5;
-  }
-}
+/* No specific scoped styles are needed as Tailwind handles the styling. */
 </style>

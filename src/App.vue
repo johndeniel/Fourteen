@@ -29,4 +29,6 @@
   </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+/* No specific scoped styles are needed as Tailwind handles the styling. */
+</style>
