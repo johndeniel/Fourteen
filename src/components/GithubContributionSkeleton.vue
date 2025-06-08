@@ -1,3 +1,12 @@
+<script setup lang="ts">
+import { Card, CardContent } from '@/components/ui/card'
+import { Avatar } from '@/components/ui/avatar'
+import { GitCommitVertical } from 'lucide-vue-next'
+import { Skeleton } from '@/components/ui/skeleton'
+const CARD_COUNT = 5
+const COMMIT_COUNT = 3
+</script>
+
 <template>
   <div class="p-4 md:p-8">
     <main>
@@ -13,9 +22,6 @@
             >
               <CardContent class="flex flex-col items-start p-4">
                 <div class="mb-3 flex w-full items-center">
-                  <GitCommitVertical
-                    class="text-muted-foreground mr-2 h-5 w-5"
-                  />
                   <Skeleton class="h-4 w-2/3" />
                 </div>
                 <Skeleton class="mb-3 h-4 w-full" />
@@ -26,7 +32,7 @@
                     :key="commitIndex"
                     class="text-muted-foreground mt-2 flex text-xs"
                   >
-                    <Github class="mt-1 mr-2 h-4 w-4 flex-shrink-0" />
+                    <GitCommitVertical class="mt-1 mr-2 h-4 w-4 flex-shrink-0" />
                     <Skeleton class="h-3 w-5/6" />
                   </div>
                 </div>
@@ -49,18 +55,6 @@
   </div>
 </template>
 
-<script setup lang="ts">
-import { Card, CardContent } from '@/components/ui/card'
-import { Avatar } from '@/components/ui/avatar'
-import { Github, GitCommitVertical } from 'lucide-vue-next'
-import { Skeleton } from '@/components/ui/skeleton'
-
-const CARD_COUNT = 5
-const COMMIT_COUNT = 3
-
-/**
- * GithubContributionSkeletonComponent renders a set of skeleton cards
- * representing GitHub contributions, suitable for use as placeholders
- * while loading actual content.
- */
-</script>
+<style scoped>
+/* No specific scoped styles are needed as Tailwind handles the styling. */
+</style>
