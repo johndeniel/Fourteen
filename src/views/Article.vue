@@ -46,20 +46,21 @@ onMounted(() => {
 </script>
 
 <template>
+
   <main role="main">
+
     <div class="mx-auto px-4 pt-8 sm:px-6 sm:pt-12">
-      <!-- Loading skeleton -->
-      <ArticleSectionSkeleton v-if="isLoading" />
+       <!-- Loading skeleton --> <ArticleSectionSkeleton v-if="isLoading" /> <!-- Error state -->
 
-      <!-- Error state -->
       <div v-else-if="error" class="py-8 text-center">
-        <p class="text-red-600 dark:text-red-400">{{ error }}</p>
-      </div>
 
-      <!-- Content -->
-      <template v-else-if="sections.length > 0">
+        <p class="text-red-600 dark:text-red-400">{{ error }}</p>
+
+      </div>
+       <!-- Content --> <template v-else-if="sections.length > 0"
+        >
         <article>
-          <ArticleSection
+           <ArticleSection
             v-for="(section, index) in sections"
             :key="`section-${index}`"
             :section="section"
@@ -67,19 +68,23 @@ onMounted(() => {
             :total-sections="sections.length"
           />
         </article>
-        <SiteFooter />
-      </template>
-
-      <!-- No content state -->
+         <SiteFooter /> </template
+      > <!-- No content state -->
       <div v-else class="py-8 text-center">
+
         <p class="text-gray-500 dark:text-gray-400">
-          No article content found.
+           No article content found.
         </p>
+
       </div>
+
     </div>
+
   </main>
+
 </template>
 
 <style scoped>
 /* No specific scoped styles are needed as Tailwind handles the styling. */
 </style>
+

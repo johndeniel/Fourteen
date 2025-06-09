@@ -8,6 +8,7 @@ const props = defineProps<{
 </script>
 
 <template>
+
   <div
     data-slot="card"
     :class="
@@ -17,6 +18,8 @@ const props = defineProps<{
       )
     "
   >
-    <slot />
+     <slot />
   </div>
+
 </template>
+

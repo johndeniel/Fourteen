@@ -12,7 +12,7 @@ const delegatedProps = reactiveOmit(props, 'class')
 </script>
 
 <template>
-  <AvatarFallback
+   <AvatarFallback
     data-slot="avatar-fallback"
     v-bind="delegatedProps"
     :class="
@@ -21,7 +21,7 @@ const delegatedProps = reactiveOmit(props, 'class')
         props.class
       )
     "
+    > <slot /> </AvatarFallback
   >
-    <slot />
-  </AvatarFallback>
 </template>
+

@@ -9,7 +9,7 @@ const props = defineProps<{
 </script>
 
 <template>
-  <AvatarRoot
+   <AvatarRoot
     data-slot="avatar"
     :class="
       cn(
@@ -17,7 +17,7 @@ const props = defineProps<{
         props.class
       )
     "
+    > <slot /> </AvatarRoot
   >
-    <slot />
-  </AvatarRoot>
 </template>
+
