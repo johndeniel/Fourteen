@@ -6,7 +6,8 @@ interface ArticleSectionSkeletonProps {
   paragraphCount?: number
 }
 
-const { sectionCount = 1, paragraphCount = 1} = defineProps<ArticleSectionSkeletonProps>()
+const { sectionCount = 1, paragraphCount = 1 } =
+  defineProps<ArticleSectionSkeletonProps>()
 </script>
 
 <template>
@@ -23,7 +24,9 @@ const { sectionCount = 1, paragraphCount = 1} = defineProps<ArticleSectionSkelet
         </header>
 
         <!-- Image skeleton -->
-        <figure class="relative mb-10 w-full overflow-hidden rounded-xl shadow-lg">
+        <figure
+          class="relative mb-10 w-full overflow-hidden rounded-xl shadow-lg"
+        >
           <Skeleton class="aspect-video w-full rounded-xl" />
         </figure>
 

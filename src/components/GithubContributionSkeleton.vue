@@ -11,7 +11,10 @@ const COMMIT_COUNT = 3
   <div class="p-4 md:p-8">
     <main>
       <section class="mb-6">
-        <div class="flex space-x-4 overflow-x-auto pb-4">
+        <div
+          class="flex space-x-4 overflow-x-auto"
+          style="-ms-overflow-style: none; scrollbar-width: none"
+        >
           <div
             v-for="index in CARD_COUNT"
             :key="index"

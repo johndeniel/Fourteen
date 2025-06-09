@@ -95,8 +95,8 @@ const handleAvatarError = (event: Event) => {
                 rel="noopener noreferrer"
                 :aria-label="`Fork ${gallery.title}`"
               >
-               <Button
-                  class="border border-gray-200 bg-white shadow-sm flex items-center justify-center gap-1 px-4 py-2"
+                <Button
+                  class="flex items-center justify-center gap-1 border border-gray-200 bg-white px-4 py-2 shadow-sm"
                   variant="outline"
                 >
                   <GitForkIcon class="h-4 w-4" aria-hidden="true" />
@@ -112,7 +112,7 @@ const handleAvatarError = (event: Event) => {
       </div>
     </div>
 
-    <CardHeader class="px-5 pt-4">
+    <CardHeader>
       <div class="flex items-start justify-between gap-3">
         <CardTitle
           class="line-clamp-2 text-xl leading-tight font-bold tracking-tight text-gray-900"
@@ -146,7 +146,7 @@ const handleAvatarError = (event: Event) => {
     </CardHeader>
 
     <CardContent
-      class="flex flex-1 flex-col space-y-3 overflow-hidden px-5 pb-4"
+      class="flex flex-1 flex-col space-y-3 overflow-hidden px-5 pb-7"
     >
       <p
         class="line-clamp-3 h-16 overflow-hidden text-sm leading-relaxed text-gray-600"
@@ -156,12 +156,13 @@ const handleAvatarError = (event: Event) => {
 
       <div
         v-if="validTechIndices.length > 0"
-        class="flex flex-wrap items-center gap-2"
+        class="mb-5 flex items-center gap-3"
       >
+        <span class="text-xs font-semibold text-gray-500">STACK:</span>
         <template v-for="techIndex in validTechIndices" :key="techIndex">
-          <HoverCard>
+          <HoverCard :open-delay="200">
             <HoverCardTrigger as-child>
-              <Avatar class="h-8 w-8 cursor-default border border-gray-200">
+              <Avatar class="h-7 w-7 cursor-pointer border">
                 <AvatarImage
                   :alt="getTechInfo(techIndex).tech"
                   :src="getTechInfo(techIndex).icon"
@@ -172,33 +173,29 @@ const handleAvatarError = (event: Event) => {
                 </AvatarFallback>
               </Avatar>
             </HoverCardTrigger>
-            <HoverCardContent
-              class="w-72 border border-gray-200 bg-white p-4 shadow-md"
-            >
-              <div class="flex space-x-3">
-                <Avatar class="h-10 w-10">
-                  <AvatarImage
-                    :src="getTechInfo(techIndex).icon"
-                    :alt="getTechInfo(techIndex).tech"
-                    @error="handleAvatarError"
-                  />
-                  <AvatarFallback class="text-sm font-semibold">
-                    {{ getTechInfo(techIndex).tech.charAt(0).toUpperCase() }}
-                  </AvatarFallback>
+            <HoverCardContent class="w-80" side="top">
+              <div class="flex space-x-4">
+                <Avatar>
+                  <AvatarImage :src="getTechInfo(techIndex).icon" />
+                  <AvatarFallback>{{
+                    getTechInfo(techIndex).tech.slice(0, 2).toUpperCase()
+                  }}</AvatarFallback>
                 </Avatar>
-                <div class="flex-1 space-y-1">
-                  <h4 class="text-base font-semibold text-gray-900">
+                <div class="space-y-1">
+                  <h4 class="text-sm font-semibold">
                     {{ getTechInfo(techIndex).tech }}
                   </h4>
-                  <p class="line-clamp-2 text-sm leading-normal text-gray-600">
+                  <p class="text-sm">
                     {{ getTechInfo(techIndex).info }}
                   </p>
                   <div
                     v-if="getTechInfo(techIndex).date"
-                    class="flex items-center pt-1 text-xs text-gray-500"
+                    class="flex items-center pt-2"
                   >
                     <CalendarDaysIcon class="mr-2 h-4 w-4 opacity-70" />
-                    <span>{{ getTechInfo(techIndex).date }}</span>
+                    <span class="text-muted-foreground text-xs">{{
+                      getTechInfo(techIndex).date
+                    }}</span>
                   </div>
                 </div>
               </div>
@@ -206,24 +203,32 @@ const handleAvatarError = (event: Event) => {
           </HoverCard>
         </template>
       </div>
-
-      <div class="mt-auto flex items-center gap-2">
-        <a
-          class="inline-flex h-9 flex-1 items-center justify-center rounded-md bg-gray-900 text-sm font-semibold text-white transition-colors hover:bg-gray-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-950 focus-visible:ring-offset-2"
+      <div class="flex items-center gap-3">
+        <Button
+          as="a"
+          class="flex-1"
           target="_blank"
           rel="noopener noreferrer"
           :href="gallery.live"
           :aria-label="`Live demo of ${gallery.title}`"
         >
           Live Demo
-        </a>
-        <RouterLink
-          class="inline-flex h-9 flex-1 items-center justify-center rounded-md border border-gray-300 bg-white text-sm font-semibold text-gray-700 transition-colors hover:bg-gray-100 hover:border-gray-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-950 focus-visible:ring-offset-2"
-          :to="{ name: 'article', params: { id: gallery.title.toLowerCase() } }"
+        </Button>
+        <Button
+          as-child
+          variant="outline"
+          class="flex-1"
           :aria-label="`Read more about ${gallery.title}`"
         >
-          Full Read
-        </RouterLink>
+          <RouterLink
+            :to="{
+              name: 'article',
+              params: { id: gallery.title.toLowerCase() },
+            }"
+          >
+            Full Read
+          </RouterLink>
+        </Button>
       </div>
     </CardContent>
   </Card>
