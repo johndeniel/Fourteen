@@ -4,7 +4,7 @@ import { useRoute } from 'vue-router'
 import ArticleSection from '@/components/ArticleSection.vue'
 import ArticleSectionSkeleton from '@/components/ArticleSectionSkeleton.vue'
 import SiteFooter from '@/components/SiteFooter.vue'
-import { FetchArticleData } from '@/server/queries/article-data-service'
+import { FetchArticleData } from '@/lib/queries/article-data-service'
 import type { ArticleTypedef } from '@/lib/typedef/article-typedef'
 
 interface Props {

@@ -1,7 +1,6 @@
-// this is server/queries/gallery-data-service.ts
 import { ref, get, type DatabaseReference } from 'firebase/database'
 import type { GalleryTypedef } from '@/lib/typedef/gallery-typedef'
-import { database } from '@/plugins/firebase'
+import { database } from '@/lib/firebase'
 
 interface GalleryCache {
   data: GalleryTypedef[] | null

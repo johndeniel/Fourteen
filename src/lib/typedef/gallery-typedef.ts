@@ -1,5 +1,3 @@
-// this is lib/typedef/gallery-typedef'
-
 export interface GalleryTypedef {
   category: string
   description: string

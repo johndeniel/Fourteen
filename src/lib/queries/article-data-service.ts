@@ -1,8 +1,6 @@
-// this is server/queries/article-data-service
-
 import { ref, get, child, type DatabaseReference } from 'firebase/database'
 import type { ArticleTypedef } from '@/lib/typedef/article-typedef'
-import { database } from '@/plugins/firebase'
+import { database } from '@/lib/firebase'
 
 /**
  * Represents the structure of the article cache.
