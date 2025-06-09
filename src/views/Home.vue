@@ -1,75 +1,59 @@
 <script setup lang="ts">
-import { ref, onMounted, onErrorCaptured } from 'vue'
+import { ref, onMounted } from 'vue'
+import { FetchGalleryData } from '@/lib/queries/gallery-data-service'
+import { FetchRepositoryData } from '@/lib/queries/repository-data-service'
+import type { GalleryTypedef } from '@/lib/typedef/gallery-typedef'
+import type { RepositoryTypedef } from '@/lib/typedef/repository-typedef'
 import HeroSection from '@/components/HeroSection.vue'
 import GalleryCard from '@/components/GalleryCard.vue'
 import GalleryCardSkeleton from '@/components/GalleryCardSkeleton.vue'
 import GithubContribution from '@/components/GithubContribution.vue'
 import GithubContributionSkeleton from '@/components/GithubContributionSkeleton.vue'
 import SiteFooter from '@/components/SiteFooter.vue'
-import { FetchGalleryData } from '@/lib/queries/gallery-data-service'
-import { FetchRepositoryData } from '@/lib/queries/repository-data-service'
-import type { GalleryTypedef } from '@/lib/typedef/gallery-typedef'
-// Import for the repository type is now active
-import type { RepositoryTypedef } from '@/lib/typedef/repository-typedef'
 
-// --- Reactive State ---
+// Reactive State
 const galleryData = ref<GalleryTypedef[]>([])
-// FIX: The 'any' type has been replaced with the specific RepositoryTypedef
-const repositoryData = ref<RepositoryTypedef[] | null>(null)
-const isGalleryLoading = ref(true)
-const isRepositoryLoading = ref(true)
-const galleryError = ref<string | null>(null)
-const repositoryError = ref<string | null>(null)
+const isGalleryLoading = ref(false)
+const galleryError = ref('')
 
-// --- Data Fetching ---
+const repositoryData = ref<RepositoryTypedef[]>([])
+const isRepositoryLoading = ref(false)
+const repositoryError = ref('')
 
-/**
- * Loads gallery data from the server, handling loading and error states.
- */
+// Data Loading Functions
 const loadGalleryData = async () => {
+  if (isGalleryLoading.value) return
+  
+  isGalleryLoading.value = true
+  galleryError.value = ''
+  
   try {
-    isGalleryLoading.value = true
-    galleryError.value = null
-    const data = await FetchGalleryData()
-    galleryData.value = data
+    galleryData.value = await FetchGalleryData()
   } catch (error) {
-    console.error('Failed to load gallery data:', error)
-    galleryError.value =
-      error instanceof Error ? error.message : 'An unknown error occurred'
+    galleryError.value = error instanceof Error ? error.message : 'Failed to load gallery'
+    console.error('Gallery error:', error)
   } finally {
     isGalleryLoading.value = false
   }
 }
 
-/**
- * Loads repository data from the server, handling loading and error states.
- */
 const loadRepositoryData = async () => {
+  if (isRepositoryLoading.value) return
+  
+  isRepositoryLoading.value = true
+  repositoryError.value = ''
+  
   try {
-    isRepositoryLoading.value = true
-    repositoryError.value = null
-    const data = await FetchRepositoryData()
-    repositoryData.value = data
+    repositoryData.value = await FetchRepositoryData()
   } catch (error) {
-    console.error('Failed to load repository data:', error)
-    repositoryError.value =
-      error instanceof Error ? error.message : 'An unknown error occurred'
+    repositoryError.value = error instanceof Error ? error.message : 'Failed to load repository data'
+    console.error('Repository error:', error)
   } finally {
     isRepositoryLoading.value = false
   }
 }
 
-// --- Retry Logic ---
-const retryGalleryLoad = () => loadGalleryData()
-const retryRepositoryLoad = () => loadRepositoryData()
-
-// --- Lifecycle Hooks ---
-onErrorCaptured(error => {
-  console.error('A component-level error was captured:', error)
-  // Return false to prevent the error from propagating further
-  return false
-})
-
+// Lifecycle
 onMounted(() => {
   loadGalleryData()
   loadRepositoryData()
@@ -77,150 +61,117 @@ onMounted(() => {
 </script>
 
 <template>
-  <main class="relative h-full w-full bg-white dark:bg-black">
-    <div
-      class="bg-dot-black/[0.2] dark:bg-dot-white/[0.2] absolute inset-0 -z-10"
-    />
-
-    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+    <main class="container mx-auto px-4 sm:px-6 lg:px-8">
+      <!-- Hero Section -->
       <HeroSection />
 
+      <!-- Project Gallery Section -->
       <section class="py-16 sm:py-20">
-        <div class="text-center">
-          <h1
-            class="relative text-3xl font-extrabold tracking-tight sm:text-4xl md:text-5xl"
-          >
+        <header class="text-center mb-12">
+          <h2 class="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl mb-4">
             Project Gallery
-          </h1>
-          <p
-            class="text-muted-foreground relative mx-auto mt-4 max-w-2xl text-base sm:text-lg md:text-xl"
-          >
+          </h2>
+          <p class="text-muted-foreground max-w-2xl mx-auto text-base sm:text-lg md:text-xl">
             A collection of projects showcasing cutting-edge technologies.
           </p>
-        </div>
+        </header>
 
-        <div class="relative z-10 mt-12">
+        <!-- Gallery States -->
+        <div class="mt-12">
+          <!-- Loading State -->
           <div v-if="isGalleryLoading">
             <GalleryCardSkeleton :count="6" />
           </div>
 
-          <div
-            v-else-if="galleryError"
-            class="flex flex-col items-center justify-center text-center"
-          >
-            <div
-              class="w-full max-w-lg rounded-lg border border-red-200 bg-red-50 p-8 dark:border-red-900/50 dark:bg-red-950/20"
-            >
-              <h3
-                class="mb-2 text-xl font-semibold text-red-800 dark:text-red-200"
-              >
-                Failed to Load Gallery
+          <!-- Error State -->
+          <div v-else-if="galleryError" class="flex justify-center">
+            <div class="max-w-md w-full text-center p-8 border border-red-200 bg-red-50 rounded-lg dark:border-red-900/50 dark:bg-red-950/20">
+              <h3 class="text-xl font-semibold text-red-800 dark:text-red-200 mb-2">
+                Unable to Load Gallery
               </h3>
-              <p class="mb-6 text-red-600 dark:text-red-300">
-                {{ galleryError }}
-              </p>
+              <p class="text-red-600 dark:text-red-300 mb-6">{{ galleryError }}</p>
               <button
-                @click="retryGalleryLoad"
-                class="rounded-md bg-red-600 px-4 py-2 font-medium text-white transition-colors hover:bg-red-700 focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:outline-none dark:bg-red-700 dark:hover:bg-red-600 dark:focus:ring-offset-black"
+                @click="loadGalleryData"
+                class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900"
               >
                 Try Again
               </button>
             </div>
           </div>
 
-          <div
-            v-else-if="galleryData.length > 0"
-            class="grid grid-cols-1 justify-items-center gap-8 md:grid-cols-2 xl:grid-cols-3"
-          >
-            <GalleryCard
-              v-for="(item, index) in galleryData"
-              :key="item.id"
-              :gallery="item"
-              :index="index"
-            />
+          <!-- Content State -->
+          <div v-else-if="galleryData.length > 0">
+            <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8 justify-items-center">
+              <GalleryCard
+                v-for="(item, index) in galleryData"
+                :key="item.id"
+                :gallery="item"
+                :index="index"
+              />
+            </div>
           </div>
 
-          <div
-            v-else
-            class="flex flex-col items-center justify-center text-center"
-          >
-            <div
-              class="w-full max-w-lg rounded-lg border border-dashed border-gray-300 bg-gray-50 p-8 dark:border-gray-700 dark:bg-gray-900/50"
-            >
-              <h3
-                class="mb-2 text-xl font-semibold text-gray-800 dark:text-gray-200"
-              >
-                No Projects Found
+          <!-- Empty State -->
+          <div v-else class="flex justify-center">
+            <div class="max-w-md w-full text-center p-8 border border-dashed border-gray-300 bg-gray-50 rounded-lg dark:border-gray-700 dark:bg-gray-900/50">
+              <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-2">
+                No Projects Available
               </h3>
               <p class="text-gray-600 dark:text-gray-400">
-                The gallery is currently empty. Check back later for new and
-                exciting projects!
+                Check back later for new and exciting projects!
               </p>
             </div>
           </div>
         </div>
       </section>
 
+      <!-- Section Divider -->
       <hr class="border-gray-200 dark:border-gray-800" />
 
+      <!-- GitHub Activity Section -->
       <section class="py-16 sm:py-20">
-        <div class="text-center">
-          <h1
-            class="relative text-3xl font-extrabold tracking-tight sm:text-4xl md:text-5xl"
-          >
+        <header class="text-center mb-12">
+          <h2 class="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl mb-4">
             Open Source Activity
-          </h1>
-          <p
-            class="text-muted-foreground relative mx-auto mt-4 max-w-2xl text-base sm:text-lg md:text-xl"
-          >
+          </h2>
+          <p class="text-muted-foreground max-w-2xl mx-auto text-base sm:text-lg md:text-xl">
             Following my latest contributions and progress on GitHub.
           </p>
-        </div>
+        </header>
 
+        <!-- Repository States -->
         <div class="mt-12">
+          <!-- Loading State -->
           <div v-if="isRepositoryLoading">
             <GithubContributionSkeleton />
           </div>
 
-          <div
-            v-else-if="repositoryError"
-            class="flex flex-col items-center justify-center text-center"
-          >
-            <div
-              class="w-full max-w-lg rounded-lg border border-red-200 bg-red-50 p-8 dark:border-red-900/50 dark:bg-red-950/20"
-            >
-              <h3
-                class="mb-2 text-xl font-semibold text-red-800 dark:text-red-200"
-              >
-                Failed to Load Activity
+          <!-- Error State -->
+          <div v-else-if="repositoryError" class="flex justify-center">
+            <div class="max-w-md w-full text-center p-8 border border-red-200 bg-red-50 rounded-lg dark:border-red-900/50 dark:bg-red-950/20">
+              <h3 class="text-xl font-semibold text-red-800 dark:text-red-200 mb-2">
+                Unable to Load Activity
               </h3>
-              <p class="mb-6 text-red-600 dark:text-red-300">
-                {{ repositoryError }}
-              </p>
+              <p class="text-red-600 dark:text-red-300 mb-6">{{ repositoryError }}</p>
               <button
-                @click="retryRepositoryLoad"
-                class="rounded-md bg-red-600 px-4 py-2 font-medium text-white transition-colors hover:bg-red-700 focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:outline-none dark:bg-red-700 dark:hover:bg-red-600 dark:focus:ring-offset-black"
+                @click="loadRepositoryData"
+                class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900"
               >
                 Try Again
               </button>
             </div>
           </div>
 
-          <div v-else-if="repositoryData && repositoryData.length > 0">
+          <!-- Content State -->
+          <div v-else-if="repositoryData.length > 0">
             <GithubContribution :repository="repositoryData" />
           </div>
 
-          <div
-            v-else
-            class="flex flex-col items-center justify-center text-center"
-          >
-            <div
-              class="w-full max-w-lg rounded-lg border border-dashed border-gray-300 bg-gray-50 p-8 dark:border-gray-700 dark:bg-gray-900/50"
-            >
-              <h3
-                class="mb-2 text-xl font-semibold text-gray-800 dark:text-gray-200"
-              >
-                No Repository Data
+          <!-- Empty State -->
+          <div v-else class="flex justify-center">
+            <div class="max-w-md w-full text-center p-8 border border-dashed border-gray-300 bg-gray-50 rounded-lg dark:border-gray-700 dark:bg-gray-900/50">
+              <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-2">
+                No Activity Data
               </h3>
               <p class="text-gray-600 dark:text-gray-400">
                 Recent GitHub activity will appear here when available.
@@ -230,11 +181,11 @@ onMounted(() => {
         </div>
       </section>
 
+      <!-- Footer -->
       <SiteFooter />
-    </div>
-  </main>
+    </main>
 </template>
 
 <style scoped>
-/* Scoped styles are not necessary as Tailwind CSS classes are used for styling. */
+/* No specific scoped styles are needed as Tailwind handles the styling. */
 </style>
