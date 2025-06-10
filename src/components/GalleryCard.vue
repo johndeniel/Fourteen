@@ -265,3 +265,4 @@ const handleAvatarError = (event: Event) => {
 <style scoped>
 /* No specific scoped styles are needed as Tailwind handles the styling. */
 </style>
+
