@@ -9,6 +9,7 @@ import GalleryCard from '@/components/GalleryCard.vue'
 import GalleryCardSkeleton from '@/components/GalleryCardSkeleton.vue'
 import GithubContribution from '@/components/GithubContribution.vue'
 import GithubContributionSkeleton from '@/components/GithubContributionSkeleton.vue'
+import Skills from '@/components/Skills.vue'
 import SiteFooter from '@/components/SiteFooter.vue'
 
 // Reactive State
@@ -226,6 +227,14 @@ onMounted(() => {
         </div>
 
       </div>
+
+    </section>
+     <!-- Section Divider -->
+    <hr class="border-gray-200 dark:border-gray-800" />
+
+    <section class="py-16 sm:py-20">
+
+      <div class="mt-12"> <Skills /> </div>
 
     </section>
      <!-- Footer --> <SiteFooter />

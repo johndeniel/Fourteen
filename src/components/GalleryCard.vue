@@ -25,64 +25,62 @@ import {
 } from 'lucide-vue-next'
 import type { GalleryTypedef } from '@/lib/typedef/gallery-typedef'
 
+// Define the component's props, expecting a 'gallery' object and its 'index'.
 const props = defineProps<{
-  gallery: GalleryTypedef
-  index: number
+  gallery: GalleryTypedef // The data object for this project card.
+  index: number // The index of this card in the parent list.
 }>()
 
-// Determines if the current card is the first one, used for eager image loading.
-const isFirstCard = computed(() => props.index === 0)
+/**
+ * A computed property to determine the image loading strategy.
+ * The first image (index 0) loads 'eagerly' to improve Largest Contentful Paint (LCP).
+ * All other images load 'lazily' to save bandwidth and improve initial page load.
+ */
+const imageLoadingStrategy = computed(() =>
+  props.index === 0 ? 'eager' : 'lazy'
+)
 
 /**
- * Retrieves technology details based on a given index.
- * @param index The index of the technology.
- * @returns An object containing the icon, technology name, info, and date.
+ * A computed property that creates a clean list of technologies.
+ * It maps over the four possible tech slots, gathers their details,
+ * and then filters out any that are incomplete.
  */
-const getTechDetail = (index: number) => {
-  return {
-    icon:
-      (props.gallery[`icon${index}` as keyof GalleryTypedef] as string) || '',
-    techName:
-      (props.gallery[`itech${index}` as keyof GalleryTypedef] as string) || '',
-    techInfo:
-      (props.gallery[`info${index}` as keyof GalleryTypedef] as string) || '',
-    techDate:
-      (props.gallery[`idate${index}` as keyof GalleryTypedef] as string) || '',
-  }
-}
-
-// Filters and returns indices for technologies that have both an icon and a name.
-const validTechIndices = computed(() => {
-  return [1, 2, 3, 4].filter(index => {
-    const techDetail = getTechDetail(index)
-    return (
-      techDetail.techName &&
-      techDetail.icon &&
-      techDetail.techInfo &&
-      techDetail.techDate
-    )
-  })
+const technologies = computed(() => {
+  // We check for up to 4 technologies, as suggested by the prop names (e.g., 'icon1', 'icon2').
+  return (
+    [1, 2, 3, 4]
+      .map(i => ({
+        // Dynamically create a tech object for each number from 1 to 4.
+        icon: props.gallery[`icon${i}` as keyof GalleryTypedef] as string,
+        name: props.gallery[`itech${i}` as keyof GalleryTypedef] as string,
+        info: props.gallery[`info${i}` as keyof GalleryTypedef] as string,
+        date: props.gallery[`idate${i}` as keyof GalleryTypedef] as string,
+      }))
+      // Only keep technologies that have all the required fields.
+      .filter(tech => tech.icon && tech.name && tech.info && tech.date)
+  )
 })
 
 /**
- * Handles image loading errors, replacing the broken image with a placeholder from Lorem Picsum.
- * @param event The error event from the image.
+ * Fallback for a broken project image.
+ * Replaces the broken image source with a random placeholder to maintain UI integrity.
+ * @param event The DOM error event from the <img> tag.
  */
 const handleImageError = (event: Event) => {
-  const target = event.target as HTMLImageElement
-  // Using Lorem Picsum for a random placeholder image.
-  // You can adjust the dimensions (e.g., 400/250) to fit your design needs.
-  target.src = 'https://picsum.photos/400/250?random=1'
+  const imageElement = event.target as HTMLImageElement
+  // Use a placeholder service for a random fallback image.
+  imageElement.src = `https://picsum.photos/400/250?random=${props.index}`
 }
 
 /**
- * Hides the avatar image if it fails to load.
- * @param event The error event from the avatar image.
+ * Fallback for a broken avatar image.
+ * Hides the <img> tag so the <AvatarFallback> component becomes visible.
+ * @param event The DOM error event from the <img> tag inside the Avatar.
  */
 const handleAvatarError = (event: Event) => {
-  const target = event.target as HTMLImageElement
-  // Hides the avatar if image fails.
-  target.style.display = 'none'
+  const avatarImageElement = event.target as HTMLImageElement
+  // Hiding the element triggers the display of the fallback.
+  avatarImageElement.style.display = 'none'
 }
 </script>
 
@@ -97,7 +95,7 @@ const handleAvatarError = (event: Event) => {
           class="h-full w-full object-cover"
           :src="gallery.img"
           :alt="`Project: ${gallery.title}`"
-          :loading="isFirstCard ? 'eager' : 'lazy'"
+          :loading="imageLoadingStrategy"
           decoding="async"
           @error="handleImageError"
         />
@@ -135,7 +133,7 @@ const handleAvatarError = (event: Event) => {
       >
       <div class="flex items-start justify-between gap-3">
          <CardTitle
-          class="line-clamp-2 text-xl leading-tight font-bold tracking-tight text-gray-900"
+          class="line-clamp-2 text-xl font-bold leading-tight tracking-tight text-gray-900"
           > {{ gallery.title }} </CardTitle
         >
         <div
@@ -176,52 +174,39 @@ const handleAvatarError = (event: Event) => {
          {{ gallery.description }}
       </p>
 
-      <div
-        v-if="validTechIndices.length > 0"
-        class="mb-5 flex items-center gap-3"
-      >
+      <div v-if="technologies.length > 0" class="mb-5 flex items-center gap-3">
          <span class="text-xs font-semibold text-gray-500">STACK:</span>
-        <template v-for="techIndex in validTechIndices" :key="techIndex"
+        <template v-for="tech in technologies" :key="tech.name"
           > <HoverCard :open-delay="200"
             > <HoverCardTrigger as-child
               > <Avatar class="h-7 w-7 cursor-pointer border"
                 > <AvatarImage
-                  :alt="getTechDetail(techIndex).techName"
-                  :src="getTechDetail(techIndex).icon"
+                  :alt="tech.name"
+                  :src="tech.icon"
                   @error="handleAvatarError"
                 /> <AvatarFallback class="text-xs font-semibold"
-                  > {{
-                    getTechDetail(techIndex).techName.charAt(0).toUpperCase()
-                  }} </AvatarFallback
+                  > {{ tech.name.charAt(0).toUpperCase() }} </AvatarFallback
                 > </Avatar
               > </HoverCardTrigger
             > <HoverCardContent class="w-80" side="top"
               >
               <div class="flex space-x-4">
                  <Avatar
-                  > <AvatarImage :src="getTechDetail(techIndex).icon" />
-                  <AvatarFallback>{{
-                    getTechDetail(techIndex).techName.slice(0, 2).toUpperCase()
+                  > <AvatarImage :src="tech.icon" /> <AvatarFallback>{{
+                    tech.name.slice(0, 2).toUpperCase()
                   }}</AvatarFallback
                   > </Avatar
                 >
                 <div class="space-y-1">
 
-                  <h4 class="text-sm font-semibold">
-                     {{ getTechDetail(techIndex).techName }}
-                  </h4>
+                  <h4 class="text-sm font-semibold">{{ tech.name }}</h4>
 
-                  <p class="text-sm">
-                     {{ getTechDetail(techIndex).techInfo }}
-                  </p>
+                  <p class="text-sm">{{ tech.info }}</p>
 
-                  <div
-                    v-if="getTechDetail(techIndex).techDate"
-                    class="flex items-center pt-2"
-                  >
+                  <div class="flex items-center pt-2">
                      <CalendarDaysIcon class="mr-2 h-4 w-4 opacity-70" /> <span
                       class="text-muted-foreground text-xs"
-                      >{{ getTechDetail(techIndex).techDate }}</span
+                      >{{ tech.date }}</span
                     >
                   </div>
 
@@ -234,7 +219,7 @@ const handleAvatarError = (event: Event) => {
         >
       </div>
 
-      <div class="flex items-center gap-3">
+      <div class="flex items-center gap-3 pt-4">
          <Button
           as="a"
           class="flex-1"
@@ -263,6 +248,6 @@ const handleAvatarError = (event: Event) => {
 </template>
 
 <style scoped>
-/* No specific scoped styles are needed as Tailwind handles the styling. */
+/* Scoped styles are not needed as Tailwind CSS classes handle the component's styling. */
 </style>
 
