@@ -135,30 +135,38 @@ const socialLinks = [
 <template>
 
   <div
-    class="flex min-h-screen flex-col items-center justify-center bg-white text-neutral-800"
+    class="flex min-h-[80vh] sm:min-h-screen flex-col items-center justify-center bg-white text-neutral-800 p-4"
   >
 
     <div class="relative flex w-full justify-center z-10">
 
-      <div class="space-y-4 text-center">
+      <div class="space-y-2 sm:space-y-4 text-center">
 
-        <div class="text-9xl font-black tracking-tighter">14</div>
+        <div class="text-8xl sm:text-9xl font-black tracking-tighter"> 14 </div>
 
-        <div class="text-9xl font-black tracking-tighter">29</div>
+        <div class="text-8xl sm:text-9xl font-black tracking-tighter"> 29 </div>
 
       </div>
 
-      <div class="absolute top-1/2 translate-x-32 -translate-y-1/2 rotate-90">
+      <div
+        class="absolute top-1/2 -translate-y-1/2 rotate-90 translate-x-24 sm:translate-x-32"
+      >
 
         <div class="text-center">
 
-          <div class="text-4xl font-black tracking-wide mb-2">SHOWCASES</div>
+          <div
+            class="text-2xl sm:text-4xl font-black tracking-wide mb-1 sm:mb-2"
+          >
+             SHOWCASES
+          </div>
 
-          <div class="text-sm tracking-widest font-medium uppercase">
+          <div class="text-xs sm:text-sm tracking-widest font-medium uppercase">
              Clean code - creative solutions
           </div>
 
-          <div class="text-xs tracking-[0.3em] font-light mt-1">
+          <div
+            class="text-[0.5rem] sm:text-xs tracking-[0.3em] font-light mt-1"
+          >
              SOURCE CODE XIV
           </div>
 
@@ -168,7 +176,7 @@ const socialLinks = [
 
     </div>
 
-    <div class="mt-2 flex justify-center gap-2">
+    <div class="mt-4 sm:mt-2 flex justify-center gap-2">
        <template v-for="(social, index) in socialLinks" :key="index"
         > <a
           :href="social.href"
@@ -176,10 +184,10 @@ const socialLinks = [
           rel="noopener noreferrer"
           class="group relative p-3"
           :aria-label="social.label"
-          > <!-- Dynamically render the icon component --> <component
+          > <component
             :is="social.icon"
-            class="h-7 w-7 transition-all duration-300 group-hover:scale-110"
-          /> <!-- Tooltip that appears on hover -->
+            class="h-6 w-6 sm:h-7 sm:w-7 transition-all duration-300 group-hover:scale-110"
+          />
           <div
             class="pointer-events-none absolute bottom-full left-1/2 mb-2 -translate-x-1/2 scale-95 whitespace-nowrap rounded-md bg-neutral-900 px-3 py-2 text-xs font-semibold text-white opacity-0 transition-all duration-300 group-hover:scale-100 group-hover:opacity-100"
           >
