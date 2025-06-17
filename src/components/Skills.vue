@@ -171,7 +171,7 @@ const skillCategories = ref([
       'Applying proven design patterns and architectural principles for scalable systems.',
     skills: [
       {
-        name: 'RESTful APIs',
+        name: 'RESTful API',
         icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg',
       },
       {
@@ -216,7 +216,7 @@ const skillCategories = ref([
     ],
   },
   {
-    category: 'Core Development Tools',
+    category: 'Development Tools',
     description:
       'Utilizing essential tools for streamlined and efficient development workflows.',
     skills: [
@@ -238,7 +238,7 @@ const skillCategories = ref([
       },
       {
         name: 'Postman',
-        icon: 'https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/postman.svg',
+        icon: 'https://www.vectorlogo.zone/logos/getpostman/getpostman-icon.svg', // A good quality SVG icon for Postman
       },
     ],
   },
